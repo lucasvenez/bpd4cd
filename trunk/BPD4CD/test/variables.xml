@@ -1,0 +1,13 @@
+<bpel:variable name="request" messageType="tns:PACSBusinessProcessRequestMessage" />
+<bpel:variable name="response" messageType="tns:PACSBusinessProcessResponseMessage" />
+
+<bpel:variable name="imagePersistenceRequest" messageType="image:persistRequest" />
+<bpel:variable name="imagePersistenceResponse" messageType="image:persistResponse" />
+
+<bpel:variable name="diagnosticPersistenceRequest" messageType="diagnostic:persistRequest" />
+<bpel:variable name="diagnosticPersistenceResponse" messageType="diagnostic:persistResponse" />
+
+<bpel:variable name="analysisRequest" messageType="analysis:noduleIdentificationRequest" />
+<bpel:variable name="analysisResponse" messageType="analysis:noduleIdentificationResponse" />
+
+<bpel:variable name="i" type="xsd:int"/>
