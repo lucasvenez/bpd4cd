@@ -1,0 +1,151 @@
+<bpel:receive name="REC" partnerLink="client"
+	portType="tns:PACSBusinessProcessPT" operation="initiate" variable="request"
+	createInstance="yes" />
+
+<bpel:assign name="ASSIGN_1">
+
+	<bpel:copy>
+		<bpel:from>1</bpel:from>
+		<bpel:to variable="i" />
+	</bpel:copy>
+
+	<bpel:copy>
+		<bpel:from>
+			<bpel:literal>
+				<image:parameters>
+					<image:id>1</image:id>
+					<image:image>Lorem ipsum dolor sit amet.</image:image>
+				</image:parameters>
+			</bpel:literal>
+		</bpel:from>
+		<bpel:to>$imagePersistenceRequest.parameters</bpel:to>
+	</bpel:copy>
+
+	<bpel:copy>
+		<bpel:from>
+			<bpel:literal>
+				<diagnostic:parameters>
+					<diagnostic:id>1</diagnostic:id>
+					<diagnostic:diagnostic>Lorem ipsum dolor sit amet.</diagnostic:diagnostic>
+				</diagnostic:parameters>
+			</bpel:literal>
+		</bpel:from>
+		<bpel:to>$diagnosticPersistenceRequest.parameters</bpel:to>
+	</bpel:copy>
+
+	<bpel:copy>
+		<bpel:from>
+			<bpel:literal>
+				<payload>
+					<images>
+						<id>-1</id>
+						<id>-1</id>
+					</images>
+				</payload>
+			</bpel:literal>
+		</bpel:from>
+		<bpel:to>$response.payload</bpel:to>
+	</bpel:copy>
+
+	<bpel:copy>
+		<bpel:from>
+			<bpel:literal>
+				<analysis:parameters>
+					<analysis:image>Lorem ipsum dolor sit amet.</analysis:image>
+				</analysis:parameters>
+			</bpel:literal>
+		</bpel:from>
+		<bpel:to>$analysisRequest.parameters</bpel:to>
+	</bpel:copy>
+
+</bpel:assign>
+
+<bpel:while name="WhileThereAreImagesDO" name="LOOP">
+
+	<bpel:condition><![CDATA[$i <= count($request.payload/record)]]></bpel:condition>
+
+	<bpel:sequence name="whileSequence">
+
+		<bpel:assign name="DataManipulation" NAME="ASSIGN_2">
+
+			<bpel:copy>
+				<bpel:from>$request.payload/record[position()=$i]/id/text()</bpel:from>
+				<bpel:to>$imagePersistenceRequest.parameters/image:id[1]/text()</bpel:to>
+			</bpel:copy>
+
+			<bpel:copy>
+				<bpel:from>$request.payload/record[position()=$i]/image/text()</bpel:from>
+				<bpel:to>$imagePersistenceRequest.parameters/image:image[1]/text()</bpel:to>
+			</bpel:copy>
+
+			<bpel:copy>
+				<bpel:from>$request.payload/record[position()=$i]/id/text()</bpel:from>
+				<bpel:to>$diagnosticPersistenceRequest.parameters/diagnostic:id[1]/text()</bpel:to>
+			</bpel:copy>
+
+			<bpel:copy>
+				<bpel:from>$request.payload/record[position()=$i]/diagnostic/text()</bpel:from>
+				<bpel:to>$diagnosticPersistenceRequest.parameters/diagnostic:diagnostic[1]/text()</bpel:to>
+			</bpel:copy>
+
+		</bpel:assign>
+
+		<bpel:flow name="Flow" name="PAR">
+
+			<bpel:invoke name="ACT1" partnerLink="image"
+				operation="persist" inputVariable="imagePersistenceRequest"
+				outputVariable="imagePersistenceResponse" />
+
+			<bpel:invoke name="ACT2"
+				partnerLink="diagnostic" operation="persist" inputVariable="diagnosticPersistenceRequest"
+				outputVariable="diagnosticPersistenceResponse" />
+
+		</bpel:flow name="EPAR">
+
+		<bpel:if name="IF_1">
+
+			<bpel:condition><![CDATA[$diagnosticPersistenceResponse.parameters/diagnostic:return and 
+ 					$imagePersistenceResponse.parameters/image:return]]></bpel:condition>
+
+			<bpel:sequence name="Sequence">
+
+				<bpel:assign name="ASSIGN_3">
+					<bpel:copy>
+						<bpel:from>$request.payload/record[position()=$i]/image/text()</bpel:from>
+						<bpel:to>$analysisRequest.parameters/analysis:image/text()</bpel:to>
+					</bpel:copy>
+				</bpel:assign>
+
+				<bpel:invoke name="ACT3"
+					partnerLink="analysis" operation="noduleIdentification"
+					inputVariable="analysisRequest" outputVariable="analysisResponse" />
+
+				<bpel:if name="IF_2">
+					<bpel:condition>$analysisResponse.parameters/analysis:return</bpel:condition>
+					<bpel:assign name="ASSIGN_4">
+						<bpel:copy>
+							<bpel:from>$request.payload/record[position()=$i]/id/text()</bpel:from>
+							<bpel:to>$response.payload/images/id[position()=$i]/text()</bpel:to>
+						</bpel:copy>
+					</bpel:assign>
+				</bpel:if>
+
+			</bpel:sequence>
+
+		</bpel:if>
+
+		<bpel:assign name="ASSIGN_5">
+
+			<bpel:copy>
+				<bpel:from>1 + number($i)</bpel:from>
+				<bpel:to variable="i" />
+			</bpel:copy>
+
+		</bpel:assign>
+
+	</bpel:sequence>
+
+</bpel:while>
+
+<bpel:reply name="Response" partnerLink="client" operation="initiate"
+	variable="response" />
