@@ -10,7 +10,7 @@ public class Loop extends Construction<LoopNode> {
 
 	private Graph branch;
 	
-	private boolean before = false;
+	private boolean before = true;
 	
 	public Loop(String name) {
 		super(name, new LoopNode());
