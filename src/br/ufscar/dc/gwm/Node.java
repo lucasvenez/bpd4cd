@@ -1,6 +1,8 @@
 package br.ufscar.dc.gwm;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 public abstract class Node {
 
@@ -11,6 +13,10 @@ public abstract class Node {
 	protected HashMap<String,Object> attributes = new HashMap<String,Object>();
 
 	protected Scope scope;
+	
+	protected Set<Edge<Node,Node>> incomingEdges = new HashSet<Edge<Node,Node>>();
+	
+	protected Set<Edge<Node,Node>> outgoingEdges = new HashSet<Edge<Node,Node>>();
 	
 	public Node(String name) {
 		this.name = name;
@@ -51,5 +57,21 @@ public abstract class Node {
 
 	public void setScope(Scope scope) {
 		this.scope = scope;
+	}
+	
+	public boolean addIncomingEdge(Edge<Node,Node> edge) {
+		return this.incomingEdges.add(edge);
+	}
+	
+	public boolean addOutgoingEdge(Edge<Node,Node> edge) {
+		return this.outgoingEdges.add(edge);
+	}
+	
+	public boolean hasIncomingEdge(Edge<Node,Node> edge) {
+		return this.incomingEdges.contains(edge);
+	}
+	
+	public boolean hasOutgoingEdge(Edge<Node,Node> edge) {
+		return this.outgoingEdges.contains(edge);
 	}
 }
