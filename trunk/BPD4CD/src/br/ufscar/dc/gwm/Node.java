@@ -14,9 +14,9 @@ public abstract class Node {
 
 	protected Scope scope;
 	
-	protected Set<Edge<Node,Node>> incomingEdges = new HashSet<Edge<Node,Node>>();
+	protected Set<Edge<? extends Node,? extends Node>> incomingEdges = new HashSet<Edge<? extends Node,? extends Node>>();
 	
-	protected Set<Edge<Node,Node>> outgoingEdges = new HashSet<Edge<Node,Node>>();
+	protected Set<Edge<? extends Node,? extends Node>> outgoingEdges = new HashSet<Edge<? extends Node,? extends Node>>();
 	
 	public Node(String name) {
 		this.name = name;
@@ -59,19 +59,19 @@ public abstract class Node {
 		this.scope = scope;
 	}
 	
-	public boolean addIncomingEdge(Edge<Node,Node> edge) {
+	public boolean addIncomingEdge(Edge<? extends Node,? extends Node> edge) {
 		return this.incomingEdges.add(edge);
 	}
 	
-	public boolean addOutgoingEdge(Edge<Node,Node> edge) {
+	public boolean addOutgoingEdge(Edge<? extends Node,? extends Node> edge) {
 		return this.outgoingEdges.add(edge);
 	}
 	
-	public boolean hasIncomingEdge(Edge<Node,Node> edge) {
+	public boolean hasIncomingEdge(Edge<? extends Node,? extends Node> edge) {
 		return this.incomingEdges.contains(edge);
 	}
 	
-	public boolean hasOutgoingEdge(Edge<Node,Node> edge) {
+	public boolean hasOutgoingEdge(Edge<? extends Node,? extends Node> edge) {
 		return this.outgoingEdges.contains(edge);
 	}
 }
