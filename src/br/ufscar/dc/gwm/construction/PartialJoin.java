@@ -7,21 +7,55 @@ import br.ufscar.dc.gwm.Graph;
 import br.ufscar.dc.gwm.node.control.PartialJoinNode;
 
 public class PartialJoin<T1 extends PartialJoinNode> extends Construction<T1> {
+	
+	private static final long serialVersionUID = -6793206834529773745L;
 
+	private Set<Graph> incomingBranches = new HashSet<Graph>();
+	
+	private Graph outgoingBranch;
+	
+	public PartialJoin(T1 startNode) {
+		super(null, startNode);
+	}
+	
 	public PartialJoin(String name, T1 startNode) {
 		super(name, startNode);
 	}
 
-	private Graph branch;
-
+	public void setPartialJoinNode(T1 node) {
+		super.setStartNode(node);
+	}
+	
+	public T1 getPartialJoinNode() {
+		return super.getStartNode();
+	}
+	
 	@Override
 	public Set<Graph> getBranches() {
+		Set<Graph> result = new HashSet<Graph>(incomingBranches);
 		
-		Set<Graph> result = new HashSet<Graph>();
-		
-		if (branch != null)
-			result.add(branch);
+		if (outgoingBranch != null)
+			result.add(outgoingBranch);
 		
 		return result;
+	}
+	
+	public void addIncomingBranch(Graph branch) {
+		if (branch != null)
+			this.incomingBranches.add(branch);
+	}
+	
+	public Graph removeIncomingBranch(int index) throws IndexOutOfBoundsException {
+		Graph g = (Graph) this.incomingBranches.toArray()[index];
+		this.incomingBranches.remove(g);
+		return g;
+	}
+
+	public Graph getOutgoingBranch() {
+		return outgoingBranch;
+	}
+
+	public void setOutgoingBranch(Graph outgoingBranch) {
+		this.outgoingBranch = outgoingBranch;
 	}
 }

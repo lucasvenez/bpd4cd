@@ -6,10 +6,10 @@ import java.util.Set;
 import br.ufscar.dc.gwm.Graph;
 import br.ufscar.dc.gwm.node.control.LoopNode;
 
-public class Loop extends Construction<LoopNode> {
+public class Loop extends BranchedConstruction<LoopNode> {
 
-	private Graph branch;
-	
+	private static final long serialVersionUID = -993415847136102128L;
+
 	private boolean before = true;
 	
 	public Loop(String name) {
@@ -30,7 +30,6 @@ public class Loop extends Construction<LoopNode> {
 
 	@Override
 	public Set<Graph> getBranches() {
-		
 		Set<Graph> result = new HashSet<Graph>();
 		
 		if (branch != null)
@@ -38,5 +37,4 @@ public class Loop extends Construction<LoopNode> {
 		
 		return result;
 	}
-
 }
