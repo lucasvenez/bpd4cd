@@ -1,22 +1,23 @@
 package br.ufscar.dc.gwm;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-public abstract class Node {
+public abstract class Node extends Attribute {
+
+	private static final long serialVersionUID = -7715475042269142936L;
 
 	protected String name;
 
 	protected boolean onPremise;
 
-	protected HashMap<String,Object> attributes = new HashMap<String,Object>();
-
+	protected Set<Edge<? extends Node,? extends Node>> incomingEdges = 
+		new HashSet<Edge<? extends Node,? extends Node>>();
+	
+	protected Set<Edge<? extends Node,? extends Node>> outgoingEdges = 
+		new HashSet<Edge<? extends Node,? extends Node>>();
+	
 	protected Scope scope;
-	
-	protected Set<Edge<? extends Node,? extends Node>> incomingEdges = new HashSet<Edge<? extends Node,? extends Node>>();
-	
-	protected Set<Edge<? extends Node,? extends Node>> outgoingEdges = new HashSet<Edge<? extends Node,? extends Node>>();
 	
 	public Node(String name) {
 		this.name = name;
@@ -41,14 +42,6 @@ public abstract class Node {
 
 	public void setOnPremise(boolean onPremise) {
 		this.onPremise = onPremise;
-	}
-
-	public HashMap<String, Object> getAttributes() {
-		return attributes;
-	}
-
-	public void setAttributes(HashMap<String, Object> attributes) {
-		this.attributes = attributes;
 	}
 
 	public Scope getScope() {
