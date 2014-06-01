@@ -8,12 +8,15 @@ import br.ufscar.dc.gwm.edge.ControlEdge;
 import br.ufscar.dc.gwm.edge.DataEdge;
 import br.ufscar.dc.gwm.interfaces.IDataSet;
 import br.ufscar.dc.gwm.interfaces.IEdgeSet;
+import br.ufscar.dc.gwm.interfaces.INamed;
 import br.ufscar.dc.gwm.interfaces.INodeSet;
 
-public class Graph extends Attribute implements INodeSet, IEdgeSet, IDataSet {
+public class Graph extends Attribute implements INodeSet, IEdgeSet, IDataSet, INamed {
 
 	private static final long serialVersionUID = -8480919267006875680L;
 
+	private String name;
+	
 	private Node startNode;
 	
 	private Set<Node> nodes = new HashSet<Node>();
@@ -24,6 +27,16 @@ public class Graph extends Attribute implements INodeSet, IEdgeSet, IDataSet {
 
 	private Set<DataItem> data = new HashSet<DataItem>();
 
+	@Override
+	public String getName() {
+		return this.name;
+	}
+
+	@Override
+	public void setName(String name) {
+		this.name = name;
+	}
+	
 	public Node getStartNode() {
 		return this.startNode;
 	}

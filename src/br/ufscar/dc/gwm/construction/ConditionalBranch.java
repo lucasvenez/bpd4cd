@@ -9,18 +9,26 @@ import br.ufscar.dc.gwm.node.control.EifNode;
 
 public class ConditionalBranch extends CompositeConstruction<IfNode, EifNode> {
 
-	private String condition;
-	
+	private static final long serialVersionUID = 64151604333883525L;
+
 	private Graph trueBranch;
 	
 	private Graph falseBranch;
 	
-	public ConditionalBranch(String name, IfNode startNode, EifNode endNode) {
-		super(name, startNode, endNode);
+	public ConditionalBranch() {
+		super(null, new IfNode(), new EifNode());
 	}
 	
+	public ConditionalBranch(String condition) {
+		super(null, new IfNode(condition), new EifNode());
+	}
+
 	public ConditionalBranch(String name, String condition) {
 		super(name, new IfNode(condition), new EifNode());
+	}
+	
+	public ConditionalBranch(String name, IfNode startNode, EifNode endNode) {
+		super(name, startNode, endNode);
 	}
 	
 	public Graph getTrueBranch() {
@@ -39,6 +47,13 @@ public class ConditionalBranch extends CompositeConstruction<IfNode, EifNode> {
 		this.falseBranch = falseBranch;
 	}
 
+	public void addBranch(Graph branch, boolean trueBranch) {
+		if (trueBranch)
+			this.trueBranch = branch;
+		else
+			this.falseBranch = branch;
+	}
+	
 	@Override
 	public Set<Graph> getBranches() {
 		
@@ -54,10 +69,10 @@ public class ConditionalBranch extends CompositeConstruction<IfNode, EifNode> {
 	}
 
 	public String getCondition() {
-		return condition;
+		return super.startNode.getCondition();
 	}
 
 	public void setCondition(String condition) {
-		this.condition = condition;
+		super.startNode.setCondition(condition);
 	}
 }
