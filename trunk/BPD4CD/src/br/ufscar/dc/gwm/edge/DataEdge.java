@@ -5,17 +5,26 @@ import java.util.Set;
 
 import br.ufscar.dc.gwm.DataItem;
 import br.ufscar.dc.gwm.Edge;
+import br.ufscar.dc.gwm.Node;
 import br.ufscar.dc.gwm.interfaces.IDataSet;
-import br.ufscar.dc.gwm.node.control.ControlNode;
 
-public class DataEdge extends Edge<ControlNode,ControlNode> implements IDataSet {
+public class DataEdge extends Edge<Node, Node> implements IDataSet {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -141718096658691770L;
-	
+	private static final long serialVersionUID = -422382861509713499L;
+
 	private Set<DataItem> data = new HashSet<DataItem>();
+
+	public DataEdge(Node startNode, Node endNode) {
+		super(startNode, endNode);
+	}
+
+	public DataEdge(Node startNode, Node endNode, DataItem... data) {
+		super(startNode, endNode);
+
+		for (DataItem d : data)
+			if (d != null)
+				this.addData(d);
+	}
 
 	@Override
 	public Set<DataItem> getData() {
