@@ -1,18 +1,24 @@
 package br.ufscar.dc.gwm.construction;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import br.ufscar.dc.gwm.Graph;
-import br.ufscar.dc.gwm.exception.InvalidBranchException;
-import br.ufscar.dc.gwm.exception.InvalidExceptionTypeException;
+import br.ufscar.dc.gwm.Operation;
 import br.ufscar.dc.gwm.node.communication.XorNode;
 import br.ufscar.dc.gwm.node.control.ExorNode;
 
 public class ExclusiveExternalChoice extends CompositeConstruction<XorNode,ExorNode> {
 
-	private Set<Graph>  branches   = new HashSet<Graph>();
-	private Set<String> exceptions = new HashSet<String>();
+	private static final long serialVersionUID = 5132434471288485981L;
+
+	private Map<Operation,Graph> branches = new HashMap<Operation,Graph>();
+	
+	public ExclusiveExternalChoice() {
+		super(null, new XorNode(), new ExorNode());
+	}
 	
 	public ExclusiveExternalChoice(String name) {
 		super(name, new XorNode(), new ExorNode());
@@ -23,25 +29,12 @@ public class ExclusiveExternalChoice extends CompositeConstruction<XorNode,ExorN
 		super(name, startNode, endNode);
 	}
 
-	public void addExceptionBranch(String exception, Graph branch) throws Exception {
-		if (exception == null)
-			throw new NullPointerException();
-		
-		if (branch == null)
-			throw new NullPointerException();
-		
-		if (exceptions.contains(exception))
-			throw new InvalidExceptionTypeException("Exception type already handled.");
-		
-		if (branches.contains(exception))
-			throw new InvalidBranchException("Existing exception branch.");
-		
-		branches.add(branch);
-		exceptions.add(exception);
+	public void addBranch(Operation operation, Graph branch) {
+		this.branches.put(operation, branch);
 	}
 	
 	@Override
 	public Set<Graph> getBranches() {
-		return branches;
+		return new HashSet<Graph>(branches.values());
 	}
 }
