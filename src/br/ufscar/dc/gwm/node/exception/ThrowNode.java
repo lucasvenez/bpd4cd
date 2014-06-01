@@ -4,6 +4,8 @@ import br.ufscar.dc.gwm.Node;
 
 public class ThrowNode extends Node {
 
+	private static final long serialVersionUID = -2174236240095514524L;
+
 	public ThrowNode() {
 		super("throw");
 	}
