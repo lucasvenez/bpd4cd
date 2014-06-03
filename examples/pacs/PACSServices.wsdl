@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions targetNamespace="http://services.pacs.dc.ufscar.br"
+	xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://services.pacs.dc.ufscar.br"
+	xmlns:intf="http://services.pacs.dc.ufscar.br" xmlns="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+	<types>
+		<schema elementFormDefault="qualified" targetNamespace="http://services.pacs.dc.ufscar.br"
+			xmlns="http://www.w3.org/2001/XMLSchema">
+			<element name="persistImageDiagnostic">
+				<complexType>
+					<sequence>
+						<element name="imageID" type="xsd:int" />
+						<element name="diagnostic" type="xsd:string" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="persistImageDiagnosticResponse">
+				<complexType>
+					<sequence>
+						<element name="persistImageDiagnosticReturn" type="xsd:boolean" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="automaticNoduleIdentification">
+				<complexType>
+					<sequence>
+						<element name="image" type="xsd:base64Binary" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="automaticNoduleIdentificationResponse">
+				<complexType>
+					<sequence>
+						<element name="automaticNoduleIdentificationReturn" type="xsd:base64Binary" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="persistImage">
+				<complexType>
+					<sequence>
+						<element name="imageID" type="xsd:int" />
+						<element name="image" type="xsd:base64Binary" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="persistImageResponse">
+				<complexType>
+					<sequence>
+						<element name="persistImageReturn" type="xsd:boolean" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="imageExists">
+				<complexType>
+					<sequence>
+						<element name="imageID" type="xsd:int" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="imageExistsResponse">
+				<complexType>
+					<sequence>
+						<element name="imageExistsReturn" type="xsd:boolean" />
+					</sequence>
+				</complexType>
+			</element>
+		</schema>
+	</types>
+
+	<message name="imageExistsRequest">
+		<part element="impl:imageExists" name="parameters"/>
+	</message>
+
+	<message name="persistImageRequest">
+		<part element="impl:persistImage" name="parameters"/>
+	</message>
+
+	<message name="persistImageDiagnosticRequest">
+		<part element="impl:persistImageDiagnostic" name="parameters"/>
+	</message>
+
+	<message name="imageExistsResponse">
+		<part element="impl:imageExistsResponse" name="parameters"/>
+	</message>
+
+	<message name="automaticNoduleIdentificationResponse">
+		<part element="impl:automaticNoduleIdentificationResponse"
+			name="parameters"/>
+	</message>
+
+	<message name="persistImageDiagnosticResponse">
+		<part element="impl:persistImageDiagnosticResponse"
+			name="parameters"/>
+	</message>
+
+	<message name="automaticNoduleIdentificationRequest">
+		<part element="impl:automaticNoduleIdentification" name="parameters"/>
+	</message>
+
+	<message name="persistImageResponse">
+		<part element="impl:persistImageResponse" name="parameters"/>
+	</message>
+
+	<portType name="PACSServices">
+
+		<operation name="persistImageDiagnostic">
+			<input message="impl:persistImageDiagnosticRequest"
+				name="persistImageDiagnosticRequest"/>
+			<output message="impl:persistImageDiagnosticResponse"
+				name="persistImageDiagnosticResponse"/>
+		</operation>
+
+		<operation name="automaticNoduleIdentification">
+			<input message="impl:automaticNoduleIdentificationRequest"
+				name="automaticNoduleIdentificationRequest"/>
+			<output message="impl:automaticNoduleIdentificationResponse"
+				name="automaticNoduleIdentificationResponse"/>
+		</operation>
+
+		<operation name="persistImage">
+			<input message="impl:persistImageRequest" name="persistImageRequest"/>
+			<output message="impl:persistImageResponse" name="persistImageResponse"/>
+		</operation>
+
+		<operation name="imageExists">
+			<input message="impl:imageExistsRequest" name="imageExistsRequest"/>
+			<output message="impl:imageExistsResponse" name="imageExistsResponse"/>
+		</operation>
+
+	</portType>
+
+	<binding name="PACSServicesSoapBinding" type="impl:PACSServices">
+
+		<wsdlsoap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+			
+		<operation name="persistImageDiagnostic">
+			<wsdlsoap:operation soapAction="" />
+			<input name="persistImageDiagnosticRequest">
+				<wsdlsoap:body use="literal" />
+			</input>
+			<output name="persistImageDiagnosticResponse">
+				<wsdlsoap:body use="literal" />
+			</output>
+		</operation>
+
+		<operation name="automaticNoduleIdentification">
+			<wsdlsoap:operation soapAction="" />
+			<input name="automaticNoduleIdentificationRequest">
+				<wsdlsoap:body use="literal" />
+			</input>
+			<output name="automaticNoduleIdentificationResponse">
+				<wsdlsoap:body use="literal" />
+			</output>
+		</operation>
+
+		<operation name="persistImage">
+			<wsdlsoap:operation soapAction="" />
+			<input name="persistImageRequest">
+				<wsdlsoap:body use="literal" />
+			</input>
+			<output name="persistImageResponse">
+				<wsdlsoap:body use="literal" />
+			</output>
+		</operation>
+		
+		<operation name="imageExists">
+			<wsdlsoap:operation soapAction="" />
+			<input name="imageExistsRequest">
+				<wsdlsoap:body use="literal" />
+			</input>
+			<output name="imageExistsResponse">
+				<wsdlsoap:body use="literal" />
+			</output>
+		</operation>
+		
+	</binding>
+
+	<service name="PACSServicesService">
+		<port binding="impl:PACSServicesSoapBinding" name="PACSServices">
+			<wsdlsoap:address
+				location="http://localhost:8080/BPFFWebServices/services/PACSServices" />
+		</port>
+	</service>
+	
+</definitions>

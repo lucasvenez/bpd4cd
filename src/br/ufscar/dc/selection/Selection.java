@@ -11,11 +11,16 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.security.InvalidParameterException;
 
+import br.ufscar.dc.gwm.Graph;
 import br.ufscar.dc.utils.SparseMatrix;
 import br.ufscar.dc.utils.ThreeDimensionalSparseMatrix;
 
 public class Selection {
 
+	public static Graph selectLocation(Graph graph) {
+		throw new UnsupportedOperationException();
+	}
+	
 	/**
 	 * Calculation of the cost of the Workflow distribution.
 	 * 

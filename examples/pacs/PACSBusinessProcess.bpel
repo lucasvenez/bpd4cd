@@ -1,0 +1,100 @@
+<process name="PACSBusinessProcess" targetNamespace="http://example.com"
+	suppressJoinFailure="yes" xmlns:tns="http://example.com"
+	xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+	xmlns:pacs="http://services.pacs.dc.ufscar.br" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+	<import location="PACSBusinessProcess.wsdl" namespace="http://example.com"
+		importType="http://schemas.xmlsoap.org/wsdl/" />
+
+	<import location="PACSServices.wsdl" namespace="http://services.pacs.dc.ufscar.br"
+		importType="http://schemas.xmlsoap.org/wsdl/" />
+
+	<partnerLinks>
+		<partnerLink name="client" partnerLinkType="tns:PACSBusinessProcessPLT"
+			myRole="PACSBusinessProcessProvider" partnerRole="PACSBusinessProcessRequester" />
+		<partnerLink name="pacsServicesRequester" partnerLinkType="tns:PACSServicesPLT"
+			myRole="PACSServicesRequester" partnerRole="PACSServicesProvider" />
+	</partnerLinks>
+
+	<variables>
+		<variable name="imageExistsResponseVar" messageType="pacs:imageExistsResponse" />
+		<variable name="persistImageRequestVar" messageType="pacs:persistImageRequest" />
+		<variable name="imageAnalysisRequestVar" messageType="pacs:automaticNoduleIdentificationRequest" />
+		<variable name="imageAnalysisResponseVar" messageType="pacs:automaticNoduleIdentificationResponse" />
+		<variable name="output" messageType="tns:PACSBusinessProcessResponseMessage" />
+		<variable name="input" messageType="tns:PACSBusinessProcessRequestMessage" />
+		<variable name="imageVar" element="pacs:persistImage" />
+		<variable name="diagnosticVar" element="pacs:persistImageDiagnostic" />
+		<variable name="counter" type="xsd:int">
+			<from>
+				<literal xml:space="preserve">1</literal>
+			</from>
+		</variable>
+		<variable name="imagePersistenceResult" messageType="pacs:persistImageResponse" />
+		<variable name="diagnosticPersistenceResult" messageType="pacs:persistImageDiagnosticResponse" />
+		<variable name="automaticNoduleIdentificationVar" messageType="pacs:automaticNoduleIdentificationRequest"/>
+		<variable name="automaticNoduleIdentificationResult" messageType="pacs:automaticNoduleIdentificationResponse"/>
+	</variables>
+
+	<sequence name="PACSBusinessProcess">
+		<receive name="StartRequest"
+			partnerLink="client" portType="tns:PACSBusinessProcess" operation="initiate"
+			variable="input" createInstance="yes" />
+        <while name="WhileThereAreImagesDO">
+			<condition><![CDATA[$counter <= count($input.payload/imageID)]]></condition>
+			<sequence name="whileSequence">
+				<assign name="DataManipulation">
+					<copy>
+						<from><![CDATA[$input.payload/imageID[number($counter)]]]></from>
+						<to><![CDATA[$imageVar/pacs:imageID]]></to>
+					</copy>
+					<copy>
+						<from><![CDATA[$input.payload/image[number($counter)]]]></from>
+						<to><![CDATA[$imageVar/pacs:image]]></to>
+					</copy>
+					<copy>
+						<from><![CDATA[$input.payload/imageID[number($counter)]]]></from>
+						<to><![CDATA[$diagnosticVar/pacs:imageID]]></to>
+					</copy>
+					<copy>
+						<from><![CDATA[$input.payload/diagnostic[number($counter)]]]></from>
+						<to><![CDATA[$diagnosticVar/pacs:diagnostic]]></to>
+					</copy>
+				</assign>
+				<flow name="Flow">
+					<invoke name="ImagePersistence" partnerLink="pacsServicesRequester" operation="persistImage" inputVariable="imageVar" outputVariable="imagePersistenceResult" />
+					<invoke name="ImageDiagnosticPersistence" partnerLink="pacsServicesRequester" operation="persistImageDiagnostic" inputVariable="diagnosticVar" outputVariable="diagnosticPersistenceResult" />
+				</flow>
+				<if name="If">
+					<condition><![CDATA[$diagnosticPersistenceResult.parameters/pacs:persistImageDiagnosticReturn and $imagePersistenceResult.parameters/pacs:persistImageReturn]]></condition>
+					<sequence name="Sequence">
+						<assign name="GetImage">
+							<copy>
+								<from><![CDATA[$input.payload/image]]></from>
+								<to><![CDATA[$automaticNoduleIdentificationVar.parameters/pacs:image]]></to>
+							</copy>
+						</assign>
+						<invoke name="AutomaticNoduleDetection" partnerLink="pacsServicesRequester" operation="automaticNoduleIdentification" inputVariable="automaticNoduleIdentificationVar" outputVariable="automaticNoduleIdentificationResult" />
+						<assign name="AddImageOutput">
+							<copy>
+								<from><![CDATA[$automaticNoduleIdentificationVar.parameters/pacs:image]]></from>
+								<to><![CDATA[$output.payload/image[number($counter)]]]></to>
+							</copy>
+						</assign>
+					</sequence>
+					<else>
+						<throw faultName="PersistenceException"/>
+					</else>
+				</if>
+				<assign name="NextImage">
+					<copy>
+						<from><![CDATA[$counter + 1]]></from>
+						<to variable="counter" />
+					</copy>
+				</assign>
+			</sequence>
+        </while>
+        <reply name="Response" partnerLink="client"
+			operation="initiate" variable="output" />
+	</sequence>
+</process>
