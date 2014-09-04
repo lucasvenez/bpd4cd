@@ -1,23 +1,7 @@
-# Script to generate the analyzes of the selection step.
-# Author: Lucas Venezian Povoa
-###############################################################################
+##################################
+##################################
+##################################
 setwd("/home/lucas/workspace/BPD4CD/analyzes");
-
-require("scatterplot3d")
-
-d <- read.table("data/data_flow_matrix.csv", TRUE, ",","\"");
-
-png("data/sparse_matrix_3d.png", width=309.921259843, height=220);
-
-scatterplot3d(d$source, d$destination, d$variable, 
-	pch=19^d[,4], angle=40, highlight.3d=F,
-	col.axis="black", col.grid="lightgray", box=F,
-	xlim=c(0,8), ylim=c(0,8), xlab="Source", ylab="Destination",
-	zlab="Variable", color=d[,4]+16, cex=1.2, y.margin.add = 0.1,
-	label.tick.marks=F, tick.marks=F, axis=T, type="p",
-	cex.symbols=1, scale.y=1, zlim=c(0.5,3), cex.axis=1.2)
-
-dev.off();
 
 require("ggplot2")
 

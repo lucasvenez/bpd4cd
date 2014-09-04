@@ -7,5 +7,8 @@ public class EifNode extends ControlNode {
 	public EifNode() {
 		super("eif");
 	}
-
+	
+	public EifNode(String name) {
+		super(name);
+	}
 }

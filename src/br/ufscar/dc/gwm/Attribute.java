@@ -2,12 +2,17 @@ package br.ufscar.dc.gwm;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Set;
 
 public abstract class Attribute implements Serializable {
 
 	private static final long serialVersionUID = 974556228010869488L;
 	
 	protected HashMap<String,Object> attributes = new HashMap<String,Object>();
+	
+	public HashMap<String, Object> getAttributes() {
+		return this.attributes;
+	}
 	
 	/**
 	 * Associates the specified value with the specified key in this map. 
@@ -90,6 +95,14 @@ public abstract class Attribute implements Serializable {
 	 */
 	public Object getAttribute(int index) throws IndexOutOfBoundsException {
 		return this.attributes.values().toArray()[index];
+	}
+	
+	public boolean hasKey(String key) {
+		return attributes.containsKey(key);
+	}
+	
+	public Set<String> getKeys() {
+		return attributes.keySet();
 	}
 	
 	@Override

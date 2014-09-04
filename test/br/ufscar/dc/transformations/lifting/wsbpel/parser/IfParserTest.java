@@ -13,7 +13,7 @@ import javax.activation.UnsupportedDataTypeException;
 import javax.xml.parsers.ParserConfigurationException;
 
 import nl.utwente.eemcs.graph.ActivityNode;
-import nl.utwente.eemcs.graph.ConditionalConstruct;
+import nl.utwente.eemcs.graph.ConditionalBranch;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -96,7 +96,7 @@ public class IfParserTest extends ParserTest {
    @Test
    public void ifActivityTest() throws UnsupportedDataTypeException {
       
-      ConditionalConstruct conditionalConstruct =
+      ConditionalBranch conditionalConstruct =
          new IfParser( ifNode ).parse();
       
       assertTrue(conditionalConstruct.getName().equals( "persistImageCondition" ) );
@@ -110,7 +110,7 @@ public class IfParserTest extends ParserTest {
    
    @Test
    public void ifElseActivityTest() throws UnsupportedDataTypeException {
-      ConditionalConstruct conditionalConstruct =
+      ConditionalBranch conditionalConstruct =
             new IfParser( ifElseNode ).parse();
       
       assertTrue(conditionalConstruct.getName().equals( "persistImageCondition" ));

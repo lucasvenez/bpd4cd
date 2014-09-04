@@ -166,7 +166,7 @@ public class SelectionTest {
 
 		double privacityCostWeight = 50; // w_p
 
-		for (int i = 0; i < Math.pow(2,NUMBER_OF_NODES); i++) {
+		for (long i = 0; i < Math.pow(2,NUMBER_OF_NODES); i++) {
 
 			SparseMatrix<Boolean> nodesLocation = Selection
 					.generateNodesLocation(i, NUMBER_OF_NODES);

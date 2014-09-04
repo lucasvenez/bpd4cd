@@ -5,16 +5,16 @@ import static br.ufscar.dc.languages.wsbpel.components.ActivitiesName.ELSEIF;
 
 import javax.activation.UnsupportedDataTypeException;
 
-import nl.utwente.eemcs.graph.ConditionalConstruct;
-import nl.utwente.eemcs.graph.ConditionalEndNode;
-import nl.utwente.eemcs.graph.ConditionalStartNode;
+import nl.utwente.eemcs.graph.ConditionalBranch;
+import nl.utwente.eemcs.graph.EifNode;
+import nl.utwente.eemcs.graph.IfNode;
 import nl.utwente.eemcs.graph.Graph;
 
 import org.w3c.dom.Element;
 
 import br.ufscar.dc.transformations.lifting.ActivityParser;
 
-public class ElseIfParser extends ActivityParser<Element,ConditionalConstruct> {
+public class ElseIfParser extends ActivityParser<Element,ConditionalBranch> {
 
    private static final long serialVersionUID = 1400776308471683402L;
 
@@ -26,7 +26,7 @@ public class ElseIfParser extends ActivityParser<Element,ConditionalConstruct> {
    }
 
    @Override
-   public ConditionalConstruct parse() throws UnsupportedDataTypeException {
+   public ConditionalBranch parse() throws UnsupportedDataTypeException {
       
       String name;
       
@@ -38,8 +38,8 @@ public class ElseIfParser extends ActivityParser<Element,ConditionalConstruct> {
          name = ELSEIF;
       }
          
-      ConditionalConstruct conditionalConstruct 
-         = new ConditionalConstruct( name );
+      ConditionalBranch conditionalConstruct 
+         = new ConditionalBranch( name );
 
       /* getting all arbitrary attributes */
       for ( int index = 0; index < activity.getAttributes().getLength(); index++ )         
@@ -49,8 +49,8 @@ public class ElseIfParser extends ActivityParser<Element,ConditionalConstruct> {
                activity.getAttributes().item(index).getNodeValue() );
       
       /* setting startNode */
-      ConditionalStartNode startNode = 
-            new ConditionalStartNode( name.concat( "StartNode" ) );
+      IfNode startNode = 
+            new IfNode( name.concat( "StartNode" ) );
       
       /* setting condition */
       startNode.setCondition( 
@@ -63,8 +63,8 @@ public class ElseIfParser extends ActivityParser<Element,ConditionalConstruct> {
          (Graph)new Parser( (Element)activity.getLastChild() ).parse(), true );
       
       /* setting endNode */
-      ConditionalEndNode endNode =
-            new ConditionalEndNode( name.concat( "EndNode" ) );
+      EifNode endNode =
+            new EifNode( name.concat( "EndNode" ) );
       
       endNode.setParentConstruct( conditionalConstruct );
 

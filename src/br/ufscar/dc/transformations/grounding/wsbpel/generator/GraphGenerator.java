@@ -5,11 +5,10 @@ import static br.ufscar.dc.utils.XMLUtils.createElement;
 
 import javax.activation.UnsupportedDataTypeException;
 
-import nl.utwente.eemcs.graph.Graph;
-import nl.utwente.eemcs.graph.Node;
-
 import org.w3c.dom.Element;
 
+import br.ufscar.dc.gwm.Graph;
+import br.ufscar.dc.gwm.Node;
 import br.ufscar.dc.transformations.grounding.ActivityGenerator;
 
 public class GraphGenerator extends ActivityGenerator<Graph, Element> {
@@ -29,7 +28,8 @@ public class GraphGenerator extends ActivityGenerator<Graph, Element> {
          result = new Generator(activity.getNodesInWorkflowSequence().get(0)).generate();
       
       else if (activity.getNodesInWorkflowSequence().size() > 1) {
-         result = createElement(SEQUENCE);
+         
+    	 result = createElement(SEQUENCE);
          
          for(Node n : activity.getNodesInWorkflowSequence()) {
             

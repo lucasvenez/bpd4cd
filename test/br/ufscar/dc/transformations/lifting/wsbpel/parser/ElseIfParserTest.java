@@ -9,7 +9,7 @@ import static org.junit.Assert.*;
 import javax.activation.UnsupportedDataTypeException;
 import javax.xml.parsers.ParserConfigurationException;
 
-import nl.utwente.eemcs.graph.ConditionalConstruct;
+import nl.utwente.eemcs.graph.ConditionalBranch;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -62,7 +62,7 @@ public class ElseIfParserTest extends ParserTest {
    @Test
    public void test() throws UnsupportedDataTypeException {
       
-      ConditionalConstruct elseIfConstruct = new ElseIfParser( elseIfElement ).parse();
+      ConditionalBranch elseIfConstruct = new ElseIfParser( elseIfElement ).parse();
       
       assertNull( elseIfConstruct.getBranch( false ) );
       

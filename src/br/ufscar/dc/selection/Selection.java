@@ -1,7 +1,8 @@
 package br.ufscar.dc.selection;
 
 import static br.ufscar.dc.utils.Convertion.booleanToInt;
-import static br.ufscar.dc.utils.Convertion.charToBoolean;
+import static br.ufscar.dc.utils.Math.longToBooleanMatrix;
+import static br.ufscar.dc.utils.Math.min;
 import static java.lang.Math.abs;
 
 import java.io.BufferedWriter;
@@ -10,6 +11,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.security.InvalidParameterException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import br.ufscar.dc.gwm.Graph;
 import br.ufscar.dc.utils.SparseMatrix;
@@ -17,8 +21,86 @@ import br.ufscar.dc.utils.ThreeDimensionalSparseMatrix;
 
 public class Selection {
 
-	public static Graph selectLocation(Graph graph) {
-		throw new UnsupportedOperationException();
+	private Graph monolithicProcess;
+	
+	private PremisseServerConfiguration serverOnPremise;
+	
+	private CloudInstanceConfiguration cloudInstance;
+	
+	private ThreeDimensionalSparseMatrix<Boolean> dataFlow;
+	
+	private SparseMatrix<Double>  executionTimeOnPremise; // n_i
+	
+	private SparseMatrix<Double>  executionTimeOnCloud; // k_i
+	
+	private SparseMatrix<Boolean> dataConstraint; // c_j
+	
+	private SparseMatrix<Boolean> dataStorage; // P(i,j)
+	
+	private SparseMatrix<Double>  dataSize; // d_j
+	
+	private SparseMatrix<Boolean> dataLocation; // Q(i,j)
+	
+	private SparseMatrix<Boolean> dataNodeRelation; // R(i,j)
+	
+	private CostsWeight weights;
+	
+	public Selection(Graph monolithicProcess) {
+		this.monolithicProcess = monolithicProcess;
+	}
+	
+	public Selection(Graph monolithicProcess,
+			PremisseServerConfiguration serverOnPremise,
+			CloudInstanceConfiguration cloudInstance,
+			SparseMatrix<Double> nodesCostOnPremise,
+			SparseMatrix<Boolean> dataConstraint,
+			SparseMatrix<Boolean> dataStorage, 
+			SparseMatrix<Double> dataSize,
+			CostsWeight weights) {
+
+		this.monolithicProcess      = monolithicProcess;
+		this.serverOnPremise        = serverOnPremise;
+		this.cloudInstance          = cloudInstance;
+		this.executionTimeOnPremise = nodesCostOnPremise;
+		this.dataConstraint         = dataConstraint;
+		this.dataStorage            = dataStorage;
+		this.dataSize               = dataSize;
+		this.weights                = weights;
+	}
+
+	public Graph performLocationSelection() {
+		
+		calculateExecutionTimeOnCloud();
+		calculateDataNodeRelation();
+		
+		Map<Double, SparseMatrix<Boolean>> costs = new HashMap<Double, SparseMatrix<Boolean>>();
+		
+		for(long i = 0; i <= monolithicProcess.getNumberOfNodes(); i++) {
+			
+			SparseMatrix<Boolean> distribution = 
+					longToBooleanMatrix(i, monolithicProcess.getNumberOfNodes());
+			
+			if (checkNodeLocationRestriction(distribution)) {
+				continue;
+			} else {
+				calculateDataLocationMatrix(distribution);
+				costs.put(performCostCalculation(distribution), distribution);
+			}
+		}
+		
+		Double min = null;
+		
+		for(Iterator<Double> i = costs.keySet().iterator(); i.hasNext(); ) {
+			min = min(min, i.next());
+		}
+				
+		monolithicProcess.setDistributionLocation(costs.get(min));
+		
+		return monolithicProcess;
+	}
+	
+	private boolean checkNodeLocationRestriction(SparseMatrix<Boolean> distribution) {
+		return false;
 	}
 	
 	/**
@@ -30,7 +112,7 @@ public class Selection {
 	 * @param nodesCostOnPremise
 	 *            is an array that indicates each node cost on user premise
 	 *            (values between 0 and 10).
-	 * @param nodesCostOnCloud
+	 * @param executionTimeOnCloud
 	 *            is an array that indicates each node cost on cloud (values
 	 *            between 0 and 10).
 	 * @param dataNodeRelation
@@ -58,43 +140,10 @@ public class Selection {
 	 * 
 	 * @return
 	 */
-	public static double calculateCost(SparseMatrix<Boolean> nodesLocation, // s_i
-			SparseMatrix<Double> nodesCostOnPremise, // n_i
-			SparseMatrix<Double> nodesCostOnCloud, // k_i
-			SparseMatrix<Boolean> dataConstraint, // c_j
-			SparseMatrix<Boolean> dataStorage, // P(i,j)
-			SparseMatrix<Double> dataSize, // d_j
-			SparseMatrix<Boolean> dataLocation, // Q(i,j)
-			SparseMatrix<Boolean> dataNodeRelation, // R(i,j)
-			double bandwidth, // b
-			double cloudStorageCost, // cost_s
-			double cloudTransmissionCost, // cost_t
-			double cloudInstanceCost, // cost_h
-			double executionCostWeight, // w_e
-			double monetaryCostWeight, // w_m
-			double privacityCostWeight // w_p
-	) {
-
-		long numberOfNodes = nodesLocation.getNumberOfColumns();
-		long numberOfData = dataSize.getNumberOfColumns();
+	private double performCostCalculation(SparseMatrix<Boolean> nodesLocation) {
 
 		/* Checking parameters */
-		if (nodesCostOnPremise.getNumberOfColumns() != numberOfNodes
-				|| nodesCostOnPremise.getNumberOfLines() != 1
-				|| nodesCostOnCloud.getNumberOfColumns() != numberOfNodes
-				|| nodesCostOnCloud.getNumberOfLines() != 1
-				|| dataConstraint.getNumberOfColumns() != numberOfData
-				|| dataConstraint.getNumberOfLines() != 1
-				|| dataStorage.getNumberOfColumns() != numberOfData
-				|| dataStorage.getNumberOfLines() != numberOfNodes
-				|| dataLocation.getNumberOfColumns() != numberOfData
-				|| dataLocation.getNumberOfLines() != numberOfNodes
-				|| dataNodeRelation.getNumberOfColumns() != numberOfData
-				|| dataNodeRelation.getNumberOfLines() != numberOfNodes
-				|| bandwidth <= 0.00 || cloudStorageCost < 0.00
-				|| cloudTransmissionCost < 0.00 || cloudInstanceCost < 0.00
-				|| executionCostWeight < 0.0 || monetaryCostWeight < 0.00
-				|| privacityCostWeight < 0.00) {
+		if (attributesAreValid()) {
 
 			throw new InvalidParameterException(
 					"Check the length of matrix and variables values.");
@@ -104,30 +153,30 @@ public class Selection {
 
 		/* summing the nodes weight */{
 
-			for (long i = 0; i < numberOfNodes; i++) {
+			for (long i = 0; i < monolithicProcess.getNumberOfDataItems(); i++) {
 
-				executionCost += nodesCostOnCloud.getValue(0, i)
+				executionCost += executionTimeOnCloud.getValue(0, i)
 						* booleanToInt(nodesLocation.getValue(0, i))
-						+ nodesCostOnPremise.getValue(0, i)
+						+ executionTimeOnPremise.getValue(0, i)
 						* (1 - booleanToInt(nodesLocation.getValue(0, i)));
 
-				monetaryCost += cloudInstanceCost
-						* nodesCostOnCloud.getValue(0, i)
+				monetaryCost += cloudInstance.getPricePerHour()
+						* executionTimeOnCloud.getValue(0, i)
 						* booleanToInt(nodesLocation.getValue(0, 1));
 
-				for (long j = 0; j < numberOfData; j++) {
+				for (long j = 0; j < monolithicProcess.getNumberOfDataItems(); j++) {
 
-					executionCost += (dataSize.getValue(0, j) / bandwidth)
+					executionCost += (dataSize.getValue(0, j) / serverOnPremise.getBandwidth())
 							* booleanToInt(dataNodeRelation.getValue(i, j))
 							* abs(booleanToInt(nodesLocation.getValue(0, i))
 									- booleanToInt(dataLocation.getValue(i, j)));
 
-					monetaryCost += (cloudTransmissionCost
+					monetaryCost += (cloudInstance.getPriceForTransfering()
 							* dataSize.getValue(0, j)
 							* abs(booleanToInt(nodesLocation.getValue(0, i))
 									- booleanToInt(dataLocation.getValue(i, j))) * (1 - booleanToInt(dataLocation
 							.getValue(i, j))))
-							+ (cloudStorageCost
+							+ (cloudInstance.getPriceForStoring()
 									* dataSize.getValue(0, j)
 									* booleanToInt(nodesLocation.getValue(0, i)) * booleanToInt(dataStorage
 										.getValue(i, j)));
@@ -139,124 +188,72 @@ public class Selection {
 			}
 		}
 
-		StringBuffer buffer = new StringBuffer();
+		double result = weights.getExecutionCostWeight() * executionCost + 
+				        weights.getMonetaryCostWeight()  * monetaryCost  + 
+				        weights.getPrivacityCostWeight() * privacityCost;
 
-		double result = executionCostWeight * executionCost
-				+ monetaryCostWeight * monetaryCost + privacityCostWeight
-				* privacityCost;
+		/* Code for debugging*/ {
 
-		buffer.append(executionCost).append(",").append(monetaryCost)
-				.append(",").append(privacityCost).append(",").append(result)
-				.append(",").append("\"" + nodesLocation.toString() + "\"");
-
-		File file = new File(System.getProperty("user.dir")
-				+ "/analyzes/data/selection_costs.csv");
-
-		try {
-
-			if (!file.exists())
-				file.createNewFile();
-
-			 PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(file, true)));
-			 out.print(buffer.toString());
-			 out.close();
+			StringBuffer buffer = new StringBuffer();
 			
-		} catch (IOException e) {
-			e.printStackTrace();
+			buffer.append(executionCost)
+			      .append(",")
+			      .append(monetaryCost)
+				  .append(",")
+				  .append(privacityCost)
+				  .append(",")
+				  .append(result)
+				  .append(",")
+				  .append("\"" + nodesLocation.toString() + "\"");
+			
+			File file = new File(System.getProperty("user.dir") + "/analyzes/data/selection_costs.csv");
+	
+			try {
+	
+				if (!file.exists())
+					file.createNewFile();
+	
+				 PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(file, true)));
+				 out.print(buffer.toString());
+				 out.close();
+				
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 		
 		return result;
 	}
 
-	public static SparseMatrix<Double> calculateNodesCostOnCloud(
-			SparseMatrix<Double> nodesCostOnPremise, double cloudRAM,
-			int cloudVCPUs, double cloudVCPUSFrequency, double premiseRAM,
-			int premiseVCPUS, double premiseVCPUSFrequency) {
+	private void calculateExecutionTimeOnCloud() {
 
-		if (cloudRAM <= 0 || cloudVCPUs <= 0 || cloudVCPUSFrequency <= 0
-				|| premiseRAM <= 0 || premiseVCPUS <= 0
-				|| premiseVCPUSFrequency <= 0)
+		if (cloudInstance.getRam() <= 0 
+				|| cloudInstance.getvCPUs() <= 0 
+				|| cloudInstance.getFrequency() <= 0
+				|| serverOnPremise.getRam() <= 0 
+				|| serverOnPremise.getvCPUs() <= 0
+				|| serverOnPremise.getFrequency() <= 0) {
+			
 			throw new InvalidParameterException(
-					"Invalid parameter for the function \"nodesCostOnCloudCalculation\".");
+					"Invalid parameter for the function \"executionTimeOnCloudCalculation\".");
+		}
 
 		SparseMatrix<Double> result = new SparseMatrix<Double>(1,
-				nodesCostOnPremise.getNumberOfColumns(), Double.class);
+				executionTimeOnPremise.getNumberOfColumns(), Double.class);
 
-		double a = (premiseVCPUS * premiseVCPUSFrequency)
-				/ (cloudVCPUs * cloudVCPUSFrequency);
+		double a = (serverOnPremise.getvCPUs() * serverOnPremise.getFrequency())
+				/ (cloudInstance.getvCPUs() * cloudInstance.getFrequency());
 
-		double b = premiseRAM / cloudRAM;
+		double b = serverOnPremise.getRam() / cloudInstance.getRam();
 
-		for (int i = 0; i < nodesCostOnPremise.getNumberOfColumns(); i++)
+		for (int i = 0; i < executionTimeOnPremise.getNumberOfColumns(); i++)
 			result.setValue(0, i,
-					((a + b) / 2) * nodesCostOnPremise.getValue(0, i));
+					((a + b) / 2) * executionTimeOnPremise.getValue(0, i));
 
-		return result;
+		this.executionTimeOnCloud = result;
 	}
 
-	public static String generateBitsLocation(int configuration,
-			int numberOfNodes) {
-		if (configuration < 0 || numberOfNodes < 1)
-			throw new InvalidParameterException(
-					"\"configuration\" should be greater than or equals to 0 and \"numberOfNodes\" should be greater than 0.");
-
-		String bin = Integer.toBinaryString(configuration);
-
-		int limit = Integer.toBinaryString((int) Math.pow(2, numberOfNodes))
-				.length() - bin.length() - 1;
-
-		for (int j = 0; j < limit; j++)
-			bin = ("0" + bin);
-
-		return bin;
-	}
-
-	public static SparseMatrix<Boolean> generateNodesLocation(
-			int configuration, int numberOfNodes) {
-
-		if (configuration < 0 || numberOfNodes < 1)
-			throw new InvalidParameterException(
-					"\"configuration\" should be greater than or equals to 0 and \"numberOfNodes\" should be greater than 0.");
-
-		String bin = Integer.toBinaryString(configuration);
-
-		int limit = Integer.toBinaryString((int) Math.pow(2, numberOfNodes))
-				.length() - bin.length() - 1;
-
-		for (int j = 0; j < limit; j++)
-			bin = ("0" + bin);
-
-		SparseMatrix<Boolean> result = new SparseMatrix<Boolean>(1,
-				numberOfNodes, Boolean.class);
-
-		for (int i = 0; i < bin.length(); i++)
-			result.setValue(0, i, charToBoolean(bin.charAt(i)));
-
-		return result;
-	}
-
-	public static SparseMatrix<Boolean> generateNodesLocation(String bin) {
-
-		int numberOfNodes = bin.length();
-
-		int limit = Integer.toBinaryString((int) Math.pow(2, numberOfNodes))
-				.length() - bin.length() - 1;
-
-		for (int j = 0; j < limit; j++)
-			bin = ("0" + bin);
-
-		SparseMatrix<Boolean> result = new SparseMatrix<Boolean>(1,
-				numberOfNodes, Boolean.class);
-
-		for (int i = 0; i < bin.length(); i++)
-			result.setValue(0, i, charToBoolean(bin.charAt(i)));
-
-		return result;
-	}
-
-	public static SparseMatrix<Boolean> calculateDataLocation(
-			ThreeDimensionalSparseMatrix<Boolean> dataFlow,
-			SparseMatrix<Boolean> nodesLocation) {
+	private void calculateDataLocationMatrix(SparseMatrix<Boolean> nodesLocation) {
 
 		if (dataFlow == null
 				|| nodesLocation == null
@@ -264,43 +261,59 @@ public class Selection {
 						.getNumberOfColumns())
 			throw new InvalidParameterException("Invalid paramters");
 
-		final int NUMBER_OF_NODES = dataFlow.getNumberOfLines();
-		final int NUMBER_OF_DATA = dataFlow.getNumberOfWidth();
-
 		SparseMatrix<Boolean> result = new SparseMatrix<Boolean>(
-				NUMBER_OF_NODES, NUMBER_OF_DATA, Boolean.class);
+				monolithicProcess.getNumberOfNodes(), monolithicProcess.getNumberOfDataItems(), Boolean.class);
 
-		for (int o = 0; o < NUMBER_OF_NODES; o++)
-			for (int i = 0; i < NUMBER_OF_NODES; i++)
-				for (int p = 0; p < NUMBER_OF_DATA; p++)
+		for (int o = 0; o < monolithicProcess.getNumberOfNodes(); o++)
+			for (int i = 0; i < monolithicProcess.getNumberOfNodes(); i++)
+				for (int p = 0; p < monolithicProcess.getNumberOfDataItems(); p++)
 					result.setValue(o, p, true && nodesLocation.getValue(0, i)
 							|| result.getValue(o, p));
 
-		return result;
+		this.dataLocation = result;
 	}
 
-	public static SparseMatrix<Boolean> calculateDataNodeRelation(
-			ThreeDimensionalSparseMatrix<Boolean> dataFlow) {
+	private void calculateDataNodeRelation() {
 
 		if (dataFlow == null)
 			throw new InvalidParameterException(
 					"dataFlow parameter should not be null.");
 
-		final int NUMBER_OF_NODES = dataFlow.getNumberOfLines();
-		final int NUMBER_OF_DATA = dataFlow.getNumberOfWidth();
-
 		SparseMatrix<Boolean> result = new SparseMatrix<Boolean>(
-				NUMBER_OF_NODES, NUMBER_OF_DATA, Boolean.class);
+				monolithicProcess.getNumberOfNodes(), monolithicProcess.getNumberOfDataItems(), Boolean.class);
 
-		for (int i = 0; i < NUMBER_OF_NODES; i++)
-			for (int j = i + 1; j < NUMBER_OF_NODES; j++)
-				for (int k = 0; k < NUMBER_OF_DATA; k++) {
+		for (int i = 0; i < monolithicProcess.getNumberOfNodes(); i++)
+			for (int j = i + 1; j < monolithicProcess.getNumberOfNodes(); j++)
+				for (int k = 0; k < monolithicProcess.getNumberOfDataItems(); k++) {
 					if (dataFlow.getValue(i, j, k)) {
 						result.setValue(i, k, true);
 						result.setValue(j, k, true);
 					}
 				}
 
-		return result;
+		this.dataNodeRelation = result;
+	}
+
+	private boolean attributesAreValid() {
+		
+		return executionTimeOnPremise.getNumberOfColumns()   == monolithicProcess.getNumberOfNodes()
+			   && executionTimeOnPremise.getNumberOfLines()  == 1
+			   && executionTimeOnCloud.getNumberOfColumns()  == monolithicProcess.getNumberOfNodes()
+			   && executionTimeOnCloud.getNumberOfLines()    == 1
+			   && dataConstraint.getNumberOfColumns()        == monolithicProcess.getNumberOfDataItems()
+			   && dataConstraint.getNumberOfLines()          == 1
+			   && dataStorage.getNumberOfColumns()           == monolithicProcess.getNumberOfDataItems()
+			   && dataStorage.getNumberOfLines()             == monolithicProcess.getNumberOfNodes()
+			   && dataLocation.getNumberOfColumns()          == monolithicProcess.getNumberOfDataItems()
+			   && dataLocation.getNumberOfLines()            == monolithicProcess.getNumberOfNodes()
+			   && dataNodeRelation.getNumberOfColumns()      == monolithicProcess.getNumberOfDataItems()
+			   && dataNodeRelation.getNumberOfLines()        == monolithicProcess.getNumberOfNodes()
+			   && serverOnPremise.getBandwidth()             > 0 
+			   && cloudInstance.getPriceForStoring()         > 0
+			   && cloudInstance.getPriceForTransfering()     > 0 
+			   && cloudInstance.getPricePerHour()            > 0
+			   && weights.getExecutionCostWeight()           > 0 
+			   && weights.getMonetaryCostWeight()            > 0
+			   && weights.getPrivacityCostWeight()           > 0;
 	}
 }

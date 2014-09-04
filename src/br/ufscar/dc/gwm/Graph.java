@@ -1,17 +1,21 @@
 package br.ufscar.dc.gwm;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import br.ufscar.dc.gwm.edge.ControlEdge;
 import br.ufscar.dc.gwm.edge.DataEdge;
+import br.ufscar.dc.gwm.interfaces.IConcern;
 import br.ufscar.dc.gwm.interfaces.IDataSet;
 import br.ufscar.dc.gwm.interfaces.IEdgeSet;
 import br.ufscar.dc.gwm.interfaces.INamed;
 import br.ufscar.dc.gwm.interfaces.INodeSet;
+import br.ufscar.dc.utils.SparseMatrix;
 
-public class Graph extends Attribute implements INodeSet, IEdgeSet, IDataSet, INamed {
+public class Graph extends Attribute implements IConcern, INodeSet, IEdgeSet, IDataSet, INamed {
 
 	private static final long serialVersionUID = -8480919267006875680L;
 
@@ -43,6 +47,10 @@ public class Graph extends Attribute implements INodeSet, IEdgeSet, IDataSet, IN
 	
 	public void setStartNode(Node startNode) {
 		this.startNode = startNode;
+	}
+	
+	public Set<Node> getEndNodes() {
+		return new HashSet<Node>();
 	}
 	
 	public Set<Node> getNodes() {
@@ -115,8 +123,14 @@ public class Graph extends Attribute implements INodeSet, IEdgeSet, IDataSet, IN
 
 	@Override
 	public void addNode(Node node) {
-		if (node != null)
+		if (node != null) {
 			this.nodes.add(node);
+			
+			if (this.startNode == null)
+				this.startNode = node;
+			
+			node.setParentGraph(this);
+		}
 	}
 
 	@Override
@@ -239,6 +253,40 @@ public class Graph extends Attribute implements INodeSet, IEdgeSet, IDataSet, IN
 	public Set<Edge<? extends Node, ? extends Node>> findExceptionEdge(
 			Node startNode, Node endNode) {
 		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	public long getNumberOfNodes() {
+		throw new UnsupportedOperationException();
+	}
+	
+	public long getNumberOfDataItems() {
+		return this.data.size();
+	}
+
+	public Graph setDistributionLocation(SparseMatrix<Boolean> sparseMatrix) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public List<Node> getNodesInWorkflowSequence() {
+		
+		List<Node> result = new ArrayList<Node>();
+		
+		Node n = this.startNode;
+		
+		
+		while (n != null) {
+			
+			result.add(n);
+			
+			n = n.getNextNode();
+		}
+		
+		return result;
+	}
+
+	public Set<String> getOutgoingControlEdges(Node node) {
 		return null;
 	}
 }
