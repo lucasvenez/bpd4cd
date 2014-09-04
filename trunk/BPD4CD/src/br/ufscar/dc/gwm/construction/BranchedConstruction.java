@@ -1,8 +1,5 @@
 package br.ufscar.dc.gwm.construction;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import br.ufscar.dc.gwm.Graph;
 
 public class BranchedConstruction<T1> extends Construction<T1> {
@@ -23,14 +20,8 @@ public class BranchedConstruction<T1> extends Construction<T1> {
 		super(startNode);
 	}
 
-	@Override
-	public Set<Graph> getBranches() {
+	public Graph getBranch() {
 		
-		Set<Graph> result = new HashSet<Graph>();
-		
-		if (branch != null)
-			result.add(branch);
-		
-		return result;
+		return this.branch;
 	}
 }

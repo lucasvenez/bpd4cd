@@ -6,11 +6,10 @@ import static br.ufscar.dc.utils.XMLUtils.createElement;
 
 import javax.activation.UnsupportedDataTypeException;
 
-import nl.utwente.eemcs.graph.ActivityNode;
-
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import br.ufscar.dc.gwm.node.ActivityNode;
 import br.ufscar.dc.transformations.grounding.ActivityGenerator;
 import br.ufscar.dc.utils.XMLUtils;
 

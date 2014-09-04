@@ -10,7 +10,7 @@ import org.w3c.dom.Element;
 
 import br.ufscar.dc.utils.TestUtils;
 
-public class ConditionalConstructGeneratorTest {
+public class ConditionalBranchGeneratorTest {
 
    @Before
    public void setUp() throws Exception {
@@ -22,7 +22,7 @@ public class ConditionalConstructGeneratorTest {
       try {
          
          Element e = 
-            new ConditionalConstructGenerator(
+            new ConditionalBranchGenerator(
                TestUtils.createConditionConstruct(IF)).generate();
          
          assertNotNull(e);

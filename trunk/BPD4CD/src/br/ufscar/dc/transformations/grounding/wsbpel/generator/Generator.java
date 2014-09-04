@@ -2,25 +2,23 @@ package br.ufscar.dc.transformations.grounding.wsbpel.generator;
 
 import javax.activation.UnsupportedDataTypeException;
 
-import nl.utwente.eemcs.graph.ActivityNode;
-import nl.utwente.eemcs.graph.CommunicatorNode;
-import nl.utwente.eemcs.graph.CommunicatorType;
-import nl.utwente.eemcs.graph.ConditionalConstruct;
-import nl.utwente.eemcs.graph.Graph;
-import nl.utwente.eemcs.graph.LoopConstruct;
-import nl.utwente.eemcs.graph.ParallelConstruct;
-import nl.utwente.eemcs.graph.Partition;
-
 import org.w3c.dom.Element;
 
-import br.ufscar.dc.graph.Abstraction;
+import br.ufscar.dc.gwm.Graph;
+import br.ufscar.dc.gwm.construction.ConditionalBranch;
+import br.ufscar.dc.gwm.construction.Loop;
+import br.ufscar.dc.gwm.construction.ParallelBranches;
+import br.ufscar.dc.gwm.interfaces.IConcern;
+import br.ufscar.dc.gwm.node.ActivityNode;
+import br.ufscar.dc.gwm.node.communication.CommunicationNode;
+import br.ufscar.dc.gwm.node.communication.GetNode;
 import br.ufscar.dc.transformations.grounding.ActivityGenerator;
 
-public class Generator extends ActivityGenerator<Abstraction, Element> {
+public class Generator extends ActivityGenerator<IConcern, Element> {
 
    private static final long serialVersionUID = 5273940858395330913L;
    
-   public Generator(Abstraction activity) {
+   public Generator(IConcern activity) {
       super(activity);
    }
 
@@ -28,21 +26,21 @@ public class Generator extends ActivityGenerator<Abstraction, Element> {
       
       ActivityGenerator<?, Element> generator = null;
       
-      if (activity instanceof ParallelConstruct) 
-         generator = new ParallelConstructGenerator((ParallelConstruct) activity);         
+      if (activity instanceof ParallelBranches) 
+         generator = new ParallelBranchesGenerator((ParallelBranches) activity);         
       
-      else if (activity instanceof ConditionalConstruct) 
-         generator = new ConditionalConstructGenerator((ConditionalConstruct) activity);
+      else if (activity instanceof ConditionalBranch) 
+         generator = new ConditionalBranchGenerator((ConditionalBranch) activity);
       
-      else if (activity instanceof Partition) 
-         generator = new GraphGenerator(((Partition) activity).getInnerGraph());
+//      else if (activity instanceof Partition) 
+//         generator = new GraphGenerator(((Partition) activity).getInnerGraph());
       
-      else if (activity instanceof LoopConstruct) 
-         generator = new LoopConstructGenerator((LoopConstruct) activity);
+      else if (activity instanceof Loop) 
+         generator = new LoopGenerator((Loop) activity);
       
-      else if (activity instanceof CommunicatorNode) {
-         if (!((CommunicatorNode)activity).getType().equals(CommunicatorType.InvokeRes)) 
-            generator = new CommunicatorNodeGenerator((CommunicatorNode) activity);
+      else if (activity instanceof CommunicationNode) {
+         if (!(activity instanceof GetNode)) 
+            generator = new CommunicationNodeGenerator((CommunicationNode) activity);
          else
             return null;
       }

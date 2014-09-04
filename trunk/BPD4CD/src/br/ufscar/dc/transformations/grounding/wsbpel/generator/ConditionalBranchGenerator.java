@@ -1,7 +1,9 @@
 package br.ufscar.dc.transformations.grounding.wsbpel.generator;
 
-import static br.ufscar.dc.languages.wsbpel.components.ActivitiesName.*;
-
+import static br.ufscar.dc.languages.wsbpel.components.ActivitiesName.CONDITION;
+import static br.ufscar.dc.languages.wsbpel.components.ActivitiesName.ELSE;
+import static br.ufscar.dc.languages.wsbpel.components.ActivitiesName.ELSEIF;
+import static br.ufscar.dc.languages.wsbpel.components.ActivitiesName.IF;
 import static br.ufscar.dc.utils.XMLUtils.createCDATASection;
 import static br.ufscar.dc.utils.XMLUtils.createElement;
 
@@ -10,18 +12,17 @@ import java.util.Set;
 
 import javax.activation.UnsupportedDataTypeException;
 
-import nl.utwente.eemcs.graph.ConditionalConstruct;
-import nl.utwente.eemcs.graph.Graph;
-
 import org.w3c.dom.Element;
 
+import br.ufscar.dc.gwm.Graph;
+import br.ufscar.dc.gwm.construction.ConditionalBranch;
 import br.ufscar.dc.transformations.grounding.ActivityGenerator;
 
-public class ConditionalConstructGenerator extends ActivityGenerator<ConditionalConstruct, Element> {
+public class ConditionalBranchGenerator extends ActivityGenerator<ConditionalBranch, Element> {
 
    private static final long serialVersionUID = 6360613821482559196L;
 
-   public ConditionalConstructGenerator(ConditionalConstruct activity) {
+   public ConditionalBranchGenerator(ConditionalBranch activity) {
       super(activity);
    }
 
@@ -55,11 +56,11 @@ public class ConditionalConstructGenerator extends ActivityGenerator<Conditional
          Element branch = null;
          
          if (
-         current.getStartNode() instanceof ConditionalConstruct
+         current.getStartNode() instanceof ConditionalBranch
          &&
          current.getNodes().size() == 1) {
 
-            ConditionalConstruct elseifBranch = (ConditionalConstruct)current.getStartNode();
+            ConditionalBranch elseifBranch = (ConditionalBranch)current.getStartNode();
             
             Element condition = createElement(CONDITION);
             condition.appendChild(createCDATASection(elseifBranch.getStartNode().getCondition()));

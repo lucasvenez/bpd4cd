@@ -37,7 +37,7 @@ public class LoopConstructGeneratorTest {
          
          loop.setInnerGraph(innerGraph);
          
-         Element result = new LoopConstructGenerator(loop).generate();
+         Element result = new LoopGenerator(loop).generate();
          
          assertNotNull(result);
          

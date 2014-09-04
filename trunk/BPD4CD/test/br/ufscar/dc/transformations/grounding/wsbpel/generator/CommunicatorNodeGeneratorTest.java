@@ -34,7 +34,7 @@ public class CommunicatorNodeGeneratorTest {
            "yes"
            );
       
-      Element e = new CommunicatorNodeGenerator(n).generate();
+      Element e = new CommunicationNodeGenerator(n).generate();
       
       assertNotNull(e);
       
@@ -58,7 +58,7 @@ public class CommunicatorNodeGeneratorTest {
             "automaticNoduleIdentificationResult");
       
       Element e = 
-         new CommunicatorNodeGenerator(
+         new CommunicationNodeGenerator(
             (CommunicatorNode)g.getStartNode()).generate();
       
       assertNotNull(e);
@@ -74,7 +74,7 @@ public class CommunicatorNodeGeneratorTest {
       CommunicatorNode n = 
          TestUtils.createReplyActivity("Response", "client", "initiate", "output");
             
-      Element e = new CommunicatorNodeGenerator(n).generate();
+      Element e = new CommunicationNodeGenerator(n).generate();
       
       assertNotNull(e);
       

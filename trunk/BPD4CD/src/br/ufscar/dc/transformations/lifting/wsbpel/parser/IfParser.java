@@ -7,20 +7,19 @@ import static br.ufscar.dc.languages.wsbpel.components.ActivitiesName.IF;
 
 import javax.activation.UnsupportedDataTypeException;
 
-import nl.utwente.eemcs.graph.ConditionalConstruct;
-import nl.utwente.eemcs.graph.ConditionalEndNode;
-import nl.utwente.eemcs.graph.ConditionalStartNode;
-import nl.utwente.eemcs.graph.Graph;
-
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import br.ufscar.dc.gwm.Graph;
+import br.ufscar.dc.gwm.construction.ConditionalBranch;
+import br.ufscar.dc.gwm.node.control.EifNode;
+import br.ufscar.dc.gwm.node.control.IfNode;
 import br.ufscar.dc.languages.wsbpel.WSBPELLanguage;
 import br.ufscar.dc.transformations.lifting.ActivityParser;
 import br.ufscar.dc.utils.XMLUtils;
 
-public class IfParser extends ActivityParser<Element, ConditionalConstruct> {
+public class IfParser extends ActivityParser<Element, ConditionalBranch> {
 
    private static final long serialVersionUID = -530622952915061110L;
 
@@ -33,7 +32,7 @@ public class IfParser extends ActivityParser<Element, ConditionalConstruct> {
    }
 
    @Override
-   public ConditionalConstruct parse() throws UnsupportedDataTypeException {
+   public ConditionalBranch parse() throws UnsupportedDataTypeException {
 
       /* getting name attribute */
       String name;
@@ -45,8 +44,8 @@ public class IfParser extends ActivityParser<Element, ConditionalConstruct> {
          name = IF;
       }
 
-      /* creating an instance of ConditionalConstruct class */
-      ConditionalConstruct conditionalConstruct = new ConditionalConstruct(name);
+      /* creating an instance of ConditionalBranch class */
+      ConditionalBranch conditionalConstruct = new ConditionalBranch(name);
 
       /* getting all arbitrary attributes */
       for (int index = 0; index < activity.getAttributes().getLength(); index++)
@@ -56,7 +55,7 @@ public class IfParser extends ActivityParser<Element, ConditionalConstruct> {
                         .getAttributes().item(index).getNodeValue());
 
       /* creating an instance of ConditionalStart */
-      ConditionalStartNode startNode = new ConditionalStartNode(
+      IfNode startNode = new IfNode(
             name.concat("Start"));
 
       /* setting condition */
@@ -64,7 +63,7 @@ public class IfParser extends ActivityParser<Element, ConditionalConstruct> {
             super.activity.getChildNodes(), "condition").getTextContent());
 
       /* creating an instance of ConditionalEnd */
-      ConditionalEndNode endNode = new ConditionalEndNode(name.concat("End"));
+      EifNode endNode = new EifNode(name.concat("End"));
 
       /* setting data */
       startNode.setParentConstruct(conditionalConstruct);
@@ -138,7 +137,7 @@ public class IfParser extends ActivityParser<Element, ConditionalConstruct> {
          else if (e.getNodeName().equals(ELSEIF)) {
             result = new Graph();
             Element elseif = (Element) nodes.item(startIndex);
-            ConditionalConstruct conditionalConstruct = new ElseIfParser(elseif).parse();
+            ConditionalBranch conditionalConstruct = new ElseIfParser(elseif).parse();
 
             if (startIndex < endIndex)
                conditionalConstruct.setBranch(

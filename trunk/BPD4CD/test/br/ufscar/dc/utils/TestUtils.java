@@ -10,9 +10,9 @@ import static br.ufscar.dc.utils.XMLUtils.createElement;
 import nl.utwente.eemcs.graph.ActivityNode;
 import nl.utwente.eemcs.graph.CommunicatorNode;
 import nl.utwente.eemcs.graph.CommunicatorType;
-import nl.utwente.eemcs.graph.ConditionalConstruct;
-import nl.utwente.eemcs.graph.ConditionalEndNode;
-import nl.utwente.eemcs.graph.ConditionalStartNode;
+import nl.utwente.eemcs.graph.ConditionalBranch;
+import nl.utwente.eemcs.graph.EifNode;
+import nl.utwente.eemcs.graph.IfNode;
 import nl.utwente.eemcs.graph.Edge;
 import nl.utwente.eemcs.graph.EdgeType;
 import nl.utwente.eemcs.graph.Graph;
@@ -59,14 +59,14 @@ public class TestUtils {
       return assign;
    }
    
-   public static final ConditionalConstruct createConditionConstruct(String name) {
-      ConditionalConstruct conditional = new ConditionalConstruct(name);
+   public static final ConditionalBranch createConditionConstruct(String name) {
+      ConditionalBranch conditional = new ConditionalBranch(name);
       
-      ConditionalStartNode startNode = new ConditionalStartNode(name.concat("StartNode"));
+      IfNode startNode = new IfNode(name.concat("StartNode"));
       startNode.setCondition("true()");
       
       conditional.setStartNode(startNode);
-      conditional.setEndNode(new ConditionalEndNode(name.concat("EndNode")));
+      conditional.setEndNode(new EifNode(name.concat("EndNode")));
       
       Graph trueBranch = new Graph();
       trueBranch.addNode(createAssignActivity(ASSIGN.concat("1")));

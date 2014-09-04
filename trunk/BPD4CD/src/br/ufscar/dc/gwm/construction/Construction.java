@@ -1,38 +1,33 @@
 package br.ufscar.dc.gwm.construction;
 
-import java.util.Set;
-
-import br.ufscar.dc.gwm.Graph;
 import br.ufscar.dc.gwm.Node;
 
 public abstract class Construction<T1> extends Node {
 
 	private static final long serialVersionUID = 7481092845093724386L;
 
-	protected T1 startNode;
+	protected T1 node;
 	
 	public Construction() {
 		super(null);
 	}
 	
-	public Construction( T1 startNode) {
+	public Construction( T1 node) {
 		super(null);
-		this.startNode = startNode;
+		this.node = node;
 	}
 	
-	public Construction(String name, T1 startNode) {
+	public Construction(String name, T1 node) {
 		super(name);
-		this.startNode = startNode;
+		this.node = node;
 	}
 	
 	public T1 getStartNode() {
-        return startNode;
+        return node;
 	}
 
-	public void setStartNode(T1 startNode) {
-        this.startNode = startNode;
+	public void setStartNode(T1 node) {
+        this.node = node;
 	}
-	
-	public abstract Set<Graph> getBranches();
 	
 }

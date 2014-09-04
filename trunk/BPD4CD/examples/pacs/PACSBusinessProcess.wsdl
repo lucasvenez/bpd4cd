@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<definitions xmlns="http://schemas.xmlsoap.org/wsdl/"
-	xmlns:mi="http://business.studycase.dc.ufscar.br" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype"
-	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://example.com"
-	xmlns:vprop="http://docs.oasis-open.org/wsbpel/2.0/varprop" name="PACSBusinessProcess"
-	targetNamespace="http://example.com" xmlns:pacs="http://services.pacs.dc.ufscar.br">
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:mi="http://business.studycase.dc.ufscar.br" xmlns:pacs="http://services.pacs.dc.ufscar.br" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://example.com" xmlns:vprop="http://docs.oasis-open.org/wsbpel/2.0/varprop" name="PACSBusinessProcess" targetNamespace="http://example.com">
 
 	<import location="./PACSServices.wsdl" namespace="http://services.pacs.dc.ufscar.br"/>
 
@@ -12,16 +8,16 @@
 			<element name="Input">
 				<complexType>
 					<sequence maxOccurs="unbounded">
-						<element name="imageID"    type="integer"      maxOccurs="unbounded"/>
-						<element name="image"      type="base64Binary" maxOccurs="unbounded"/>
-						<element name="diagnostic" type="string"       maxOccurs="unbounded"/>
+						<element maxOccurs="unbounded" name="imageID" type="integer"/>
+						<element maxOccurs="unbounded" name="image" type="base64Binary"/>
+						<element maxOccurs="unbounded" name="diagnostic" type="string"/>
 					</sequence>
 				</complexType>
 			</element>
 			<element name="Output">
 				<complexType>
 					<sequence>
-						<element name="image" type="base64Binary" maxOccurs="unbounded"/> 
+						<element maxOccurs="unbounded" name="image" type="base64Binary"/> 
 					</sequence>
 				</complexType>
 			</element>
@@ -29,43 +25,43 @@
 	</types>
 
 	<message name="PACSBusinessProcessRequestMessage">
-		<part element="tns:Input" name="payload" />
+		<part element="tns:Input" name="payload"/>
 	</message>
 
 	<message name="PACSBusinessProcessResponseMessage">
-		<part element="tns:Output" name="payload" />
+		<part element="tns:Output" name="payload"/>
 	</message>
 
 	<portType name="PACSBusinessProcessPT">
 		<operation name="initiate">
-			<input message="tns:PACSBusinessProcessRequestMessage" />
+			<input message="tns:PACSBusinessProcessRequestMessage"/>
 			<output message="tns:PACSBusinessProcessResponseMessage"/>
 		</operation>
 	</portType>
 
 	<plnk:partnerLinkType name="PACSBusinessProcessPLT">
-		<plnk:role name="PACSBusinessProcessProvider" portType="tns:PACSBusinessProcessPT" />
-		<plnk:role name="PACSBusinessProcessRequester" portType="tns:PACSBusinessProcessPT" />
+		<plnk:role name="PACSBusinessProcessProvider" portType="tns:PACSBusinessProcessPT"/>
+		<plnk:role name="PACSBusinessProcessRequester" portType="tns:PACSBusinessProcessPT"/>
 	</plnk:partnerLinkType>
 	
 	<plnk:partnerLinkType name="PACSServicesPLT">
 		<plnk:role name="PACSServicesRequester" portType="pacs:PACSServices"/>
-		<plnk:role name="PACSServicesProvider"  portType="pacs:PACSServices"/>
+		<plnk:role name="PACSServicesProvider" portType="pacs:PACSServices"/>
 	</plnk:partnerLinkType>
 	
 	<binding name="PACSBusinessProcessBinding" type="tns:PACSBusinessProcessPT">
-		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
 		<operation name="initiate">
-			<soap:operation soapAction="http://example.com/initiate" />
+			<soap:operation soapAction="http://example.com/initiate"/>
 			<input>
-				<soap:body use="literal" />
+				<soap:body use="literal"/>
 			</input>
 		</operation>
 	</binding>
 
 	<service name="PACSBusinessProcessService">
 		<port binding="tns:PACSBusinessProcessBinding" name="PACSBusinessProcessPort">
-			<soap:address location="http://localhost:8080/PACSBusinessProcess" />
+			<soap:address location="http://localhost:8080/PACSBusinessProcess"/>
 		</port>
 	</service>
 
