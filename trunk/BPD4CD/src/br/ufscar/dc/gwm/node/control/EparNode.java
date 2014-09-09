@@ -8,4 +8,8 @@ public class EparNode extends ControlNode {
 		super("epar");
 	}
 
+	public EparNode(String name) {
+		super(name);
+	}
+
 }

@@ -11,7 +11,7 @@ public abstract class CompositeConstruction<T1 extends ControlNode, T2 extends C
 	private static final long serialVersionUID = -5269284483257221432L;
 
 	protected T2 endNode;
-
+	
 	public CompositeConstruction(T1 startNode, T2 endNode) {
 		super(null, startNode);
 		this.endNode = endNode;
@@ -28,6 +28,14 @@ public abstract class CompositeConstruction<T1 extends ControlNode, T2 extends C
 
 	public abstract Set<Graph> getBranches();
 
+	public T1 getStartNode() {
+		return super.node;
+	}
+	
+	public void setStartNode(T1 startNode) {
+		this.node = startNode;
+	}
+	
 	public T2 getEndNode() {
 		return endNode;
 	}

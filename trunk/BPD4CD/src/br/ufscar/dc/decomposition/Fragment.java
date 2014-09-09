@@ -1,7 +1,7 @@
 package br.ufscar.dc.decomposition;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 import br.ufscar.dc.gwm.Graph;
 
@@ -9,9 +9,9 @@ public class Fragment {
 
 	private Graph subprocess;
 	
-	private Set<Graph> concernsAllocatedForCloud = new HashSet<Graph>();
+	private Map<String, Graph> concernsAllocatedForCloud = new HashMap<String, Graph>();
 	
-	private Set<Graph> concernsAllocatedForPremisse = new HashSet<Graph>();
+	private Map<String, Graph> concernsAllocatedForPremisse = new HashMap<String, Graph>();
 
 	public Graph getSubprocess() {
 		return subprocess;
@@ -21,20 +21,20 @@ public class Fragment {
 		this.subprocess = subprocess;
 	}
 
-	public Set<Graph> getConcernsAllocatedForCloud() {
+	public Map<String, Graph> getConcernsAllocatedForCloud() {
 		return concernsAllocatedForCloud;
 	}
 
-	public void setConcernsAllocatedForCloud(Set<Graph> concernsAllocatedForCloud) {
+	public void setConcernsAllocatedForCloud(Map<String, Graph> concernsAllocatedForCloud) {
 		this.concernsAllocatedForCloud = concernsAllocatedForCloud;
 	}
 
-	public Set<Graph> getConcernsAllocatedForPremisse() {
+	public Map<String, Graph> getConcernsAllocatedForPremisse() {
 		return concernsAllocatedForPremisse;
 	}
 
 	public void setConcernsAllocatedForPremisse(
-			Set<Graph> concernsAllocatedForPremisse) {
+			Map<String, Graph> concernsAllocatedForPremisse) {
 		this.concernsAllocatedForPremisse = concernsAllocatedForPremisse;
 	}
 	

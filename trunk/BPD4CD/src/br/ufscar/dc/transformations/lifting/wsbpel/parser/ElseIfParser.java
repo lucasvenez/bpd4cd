@@ -5,13 +5,12 @@ import static br.ufscar.dc.languages.wsbpel.components.ActivitiesName.ELSEIF;
 
 import javax.activation.UnsupportedDataTypeException;
 
-import nl.utwente.eemcs.graph.ConditionalBranch;
-import nl.utwente.eemcs.graph.EifNode;
-import nl.utwente.eemcs.graph.IfNode;
-import nl.utwente.eemcs.graph.Graph;
-
 import org.w3c.dom.Element;
 
+import br.ufscar.dc.gwm.Graph;
+import br.ufscar.dc.gwm.construction.ConditionalBranch;
+import br.ufscar.dc.gwm.node.control.EifNode;
+import br.ufscar.dc.gwm.node.control.IfNode;
 import br.ufscar.dc.transformations.lifting.ActivityParser;
 
 public class ElseIfParser extends ActivityParser<Element,ConditionalBranch> {
@@ -38,13 +37,13 @@ public class ElseIfParser extends ActivityParser<Element,ConditionalBranch> {
          name = ELSEIF;
       }
          
-      ConditionalBranch conditionalConstruct 
+      ConditionalBranch conditionalBranch 
          = new ConditionalBranch( name );
 
       /* getting all arbitrary attributes */
       for ( int index = 0; index < activity.getAttributes().getLength(); index++ )         
          if ( !activity.getAttributes().item(index).getNodeName().equals( "name" ) )
-            conditionalConstruct.addAttribute( 
+            conditionalBranch.addAttribute( 
                activity.getAttributes().item(index).getNodeName(),
                activity.getAttributes().item(index).getNodeValue() );
       
@@ -56,22 +55,22 @@ public class ElseIfParser extends ActivityParser<Element,ConditionalBranch> {
       startNode.setCondition( 
          activity.getElementsByTagName( CONDITION ).item( 0 ).getTextContent() );
       
-      startNode.setParentConstruct( conditionalConstruct );
+      startNode.setParentConstruction( conditionalBranch );
       
       /* setting branch */
-      conditionalConstruct.setBranch(
-         (Graph)new Parser( (Element)activity.getLastChild() ).parse(), true );
+      conditionalBranch.addBranch(true,
+    		  (Graph)new Parser( (Element)activity.getLastChild() ).parse() );
       
       /* setting endNode */
       EifNode endNode =
             new EifNode( name.concat( "EndNode" ) );
       
-      endNode.setParentConstruct( conditionalConstruct );
+      endNode.setParentConstruction( conditionalBranch );
 
       /* setting child */
-      conditionalConstruct.setStartNode( startNode );
-      conditionalConstruct.setEndNode( endNode );
+      conditionalBranch.setStartNode( startNode );
+      conditionalBranch.setEndNode( endNode );
       
-      return conditionalConstruct;
+      return conditionalBranch;
    }
 }

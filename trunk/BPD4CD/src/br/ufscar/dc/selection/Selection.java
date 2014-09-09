@@ -31,17 +31,17 @@ public class Selection {
 	
 	private SparseMatrix<Double>  executionTimeOnPremise; // n_i
 	
-	private SparseMatrix<Double>  executionTimeOnCloud; // k_i
+	private SparseMatrix<Double>  executionTimeOnCloud;   // k_i
 	
-	private SparseMatrix<Boolean> dataConstraint; // c_j
+	private SparseMatrix<Boolean> dataConstraint;         // c_j
 	
-	private SparseMatrix<Boolean> dataStorage; // P(i,j)
+	private SparseMatrix<Boolean> dataStorage;            // P(i,j)
 	
-	private SparseMatrix<Double>  dataSize; // d_j
+	private SparseMatrix<Double>  dataSize;               // d_j
 	
-	private SparseMatrix<Boolean> dataLocation; // Q(i,j)
+	private SparseMatrix<Boolean> dataLocation;           // Q(i,j)
 	
-	private SparseMatrix<Boolean> dataNodeRelation; // R(i,j)
+	private SparseMatrix<Boolean> dataNodeRelation;       // R(i,j)
 	
 	private CostsWeight weights;
 	
@@ -109,34 +109,6 @@ public class Selection {
 	 * @param nodesLocation
 	 *            is a sparse matrix that indicates where a node is located
 	 *            (cloud or on-premise).
-	 * @param nodesCostOnPremise
-	 *            is an array that indicates each node cost on user premise
-	 *            (values between 0 and 10).
-	 * @param executionTimeOnCloud
-	 *            is an array that indicates each node cost on cloud (values
-	 *            between 0 and 10).
-	 * @param dataNodeRelation
-	 *            is an sparse matrix that indicates the relation between data
-	 *            elements and each node.
-	 * @param dataRestriction
-	 *            is an array that indicates the restriction of each data
-	 *            element.
-	 * @param dataStorage
-	 *            is an array that indicates if the data is persisted or not.
-	 * 
-	 * @param bandwidth
-	 * 
-	 * @param cloudStorageCost
-	 * 
-	 * @param cloudTranmissionCost
-	 * 
-	 * @param cloudInstanceCost
-	 * 
-	 * @param executionCostWeight
-	 * 
-	 * @param monetaryCostWeight
-	 * 
-	 * @param privacityCostWeight
 	 * 
 	 * @return
 	 */

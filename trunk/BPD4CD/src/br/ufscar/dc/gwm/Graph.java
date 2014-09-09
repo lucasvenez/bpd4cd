@@ -30,7 +30,7 @@ public class Graph extends Attribute implements IConcern, INodeSet, IEdgeSet, ID
 	private Set<Scope> scopes = new HashSet<Scope>();
 
 	private Set<DataItem> data = new HashSet<DataItem>();
-
+	
 	@Override
 	public String getName() {
 		return this.name;
@@ -288,5 +288,16 @@ public class Graph extends Attribute implements IConcern, INodeSet, IEdgeSet, ID
 
 	public Set<String> getOutgoingControlEdges(Node node) {
 		return null;
+	}
+
+	public boolean isAllocatedForPremise() {
+		return this.startNode.isOnPremise();
+	}
+
+	public void removeEdges(Set<? extends Edge<? extends Node, ? extends Node>> outgoingControlEdges) {
+		
+		//TODO implementing removeEdges methods
+		throw new UnsupportedOperationException();
+		
 	}
 }

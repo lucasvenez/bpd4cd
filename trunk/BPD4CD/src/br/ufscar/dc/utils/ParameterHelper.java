@@ -1,4 +1,4 @@
-package br.ufscar.dc.helpers;
+package br.ufscar.dc.utils;
 
 import java.util.HashMap;
 import java.util.Set;

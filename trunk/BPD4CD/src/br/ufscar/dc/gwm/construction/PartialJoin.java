@@ -23,14 +23,13 @@ public class PartialJoin<T1 extends PartialJoinNode> extends Construction<T1> {
 	}
 
 	public void setPartialJoinNode(T1 node) {
-		super.setStartNode(node);
+		super.setNode(node);
 	}
 	
 	public T1 getPartialJoinNode() {
-		return super.getStartNode();
+		return super.getNode();
 	}
 	
-	@Override
 	public Set<Graph> getBranches() {
 		Set<Graph> result = new HashSet<Graph>(incomingBranches);
 		

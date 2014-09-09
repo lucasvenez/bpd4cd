@@ -2,10 +2,9 @@ package br.ufscar.dc.transformations.lifting.wsbpel.parser;
 
 import static br.ufscar.dc.languages.wsbpel.components.ActivitiesName.ASSIGN;
 
-import nl.utwente.eemcs.graph.ActivityNode;
-
 import org.w3c.dom.Element;
 
+import br.ufscar.dc.gwm.node.ActivityNode;
 import br.ufscar.dc.transformations.lifting.ActivityParser;
 
 public class AssignParser extends ActivityParser<Element, ActivityNode> {
