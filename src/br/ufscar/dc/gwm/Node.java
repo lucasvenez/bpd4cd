@@ -72,7 +72,7 @@ public abstract class Node extends Attribute implements IConcern {
 	
 	public Node getNextNode() {
 		
-		Set<Edge<? extends Node, ? extends Node>> e = getOutgoingControlEdges();
+		Set<ControlEdge> e = getOutgoingControlEdges();
 		
 		if (e.isEmpty())
 			return null;
@@ -86,57 +86,57 @@ public abstract class Node extends Attribute implements IConcern {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Set<Edge<? extends Node,? extends Node>> getOutgoingControlEdges() {
+	public Set<ControlEdge> getOutgoingControlEdges() {
 		
-		Set<Edge<? extends Node, ? extends Node>> result = new HashSet<Edge<? extends Node, ? extends Node>>();
+		Set<ControlEdge> result = new HashSet<ControlEdge>();
 		
 		for (Edge<? extends Node, ? extends Node> e : this.outgoingEdges.toArray(new Edge[0])) 
 			
-			if (e instanceof ControlEdge && !(e instanceof CommunicationEdge) && !(e instanceof ExceptionEdge)) 
+			if (e instanceof ControlEdge) 
 				
-				result.add(e);
+				result.add((ControlEdge)e);
 		
 		return result;
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Set<Edge<? extends Node,? extends Node>> getOutgoingExceptionEdges() {
+	public Set<ExceptionEdge> getOutgoingExceptionEdges() {
 		
-		Set<Edge<? extends Node, ? extends Node>> result = new HashSet<Edge<? extends Node, ? extends Node>>();
+		Set<ExceptionEdge> result = new HashSet<ExceptionEdge>();
 		
 		for (Edge<? extends Node, ? extends Node> e : this.outgoingEdges.toArray(new Edge[0])) 
 			
 			if (e instanceof ExceptionEdge) 
 				
-				result.add(e);
+				result.add((ExceptionEdge)e);
 		
 		return result;
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Set<Edge<? extends Node,? extends Node>> getOutgoingCommunicationEdges() {
+	public Set<CommunicationEdge> getOutgoingCommunicationEdges() {
 		
-		Set<Edge<? extends Node, ? extends Node>> result = new HashSet<Edge<? extends Node, ? extends Node>>();
+		Set<CommunicationEdge> result = new HashSet<CommunicationEdge>();
 		
 		for (Edge<? extends Node, ? extends Node> e : this.outgoingEdges.toArray(new Edge[0])) 
 			
 			if (e instanceof CommunicationEdge) 
 				
-				result.add(e);
+				result.add((CommunicationEdge)e);
 		
 		return result;
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Set<Edge<? extends Node,? extends Node>> getOutgoingDataEdges() {
+	public Set<DataEdge> getOutgoingDataEdges() {
 		
-		Set<Edge<? extends Node, ? extends Node>> result = new HashSet<Edge<? extends Node, ? extends Node>>();
+		Set<DataEdge> result = new HashSet<DataEdge>();
 		
 		for (Edge<? extends Node, ? extends Node> e : this.outgoingEdges.toArray(new Edge[0])) 
 			
 			if (e instanceof DataEdge) 
 				
-				result.add(e);
+				result.add((DataEdge)e);
 		
 		return result;
 	}
@@ -147,57 +147,57 @@ public abstract class Node extends Attribute implements IConcern {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Set<Edge<? extends Node,? extends Node>> getIncomingControlEdges() {
+	public Set<ControlEdge> getIncomingControlEdges() {
 		
-		Set<Edge<? extends Node, ? extends Node>> result = new HashSet<Edge<? extends Node, ? extends Node>>();
+		Set<ControlEdge> result = new HashSet<ControlEdge>();
 		
 		for (Edge<? extends Node, ? extends Node> e : this.incomingEdges.toArray(new Edge[0])) 
 			
 			if (e instanceof ControlEdge && !(e instanceof CommunicationEdge) && !(e instanceof ExceptionEdge)) 
 				
-				result.add(e);
+				result.add((ControlEdge)e);
 		
 		return result;
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Set<Edge<? extends Node,? extends Node>> getIncomingExceptionEdges() {
+	public Set<ExceptionEdge> getIncomingExceptionEdges() {
 		
-		Set<Edge<? extends Node, ? extends Node>> result = new HashSet<Edge<? extends Node, ? extends Node>>();
+		Set<ExceptionEdge> result = new HashSet<ExceptionEdge>();
 		
 		for (Edge<? extends Node, ? extends Node> e : this.incomingEdges.toArray(new Edge[0])) 
 			
 			if (e instanceof ExceptionEdge) 
 				
-				result.add(e);
+				result.add((ExceptionEdge)e);
 		
 		return result;
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Set<Edge<? extends Node,? extends Node>> getIncomingCommunicationEdges() {
+	public Set<CommunicationEdge> getIncomingCommunicationEdges() {
 		
-		Set<Edge<? extends Node, ? extends Node>> result = new HashSet<Edge<? extends Node, ? extends Node>>();
+		Set<CommunicationEdge> result = new HashSet<CommunicationEdge>();
 		
 		for (Edge<? extends Node, ? extends Node> e : this.incomingEdges.toArray(new Edge[0])) 
 			
 			if (e instanceof CommunicationEdge) 
 				
-				result.add(e);
+				result.add((CommunicationEdge)e);
 		
 		return result;
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Set<Edge<? extends Node,? extends Node>> getIncomingDataEdges() {
+	public Set<DataEdge> getIncomingDataEdges() {
 		
-		Set<Edge<? extends Node, ? extends Node>> result = new HashSet<Edge<? extends Node, ? extends Node>>();
+		Set<DataEdge> result = new HashSet<DataEdge>();
 		
 		for (Edge<? extends Node, ? extends Node> e : this.incomingEdges.toArray(new Edge[0])) 
 			
 			if (e instanceof DataEdge) 
 				
-				result.add(e);
+				result.add((DataEdge)e);
 		
 		return result;
 	}

@@ -25,10 +25,10 @@ public class ConditionalBranch
 	}
 
 	public String getCondition() {
-		return super.startNode.getCondition();
+		return super.node.getCondition();
 	}
 
 	public void setCondition(String condition) {
-		super.startNode.setCondition(condition);
+		super.node.setCondition(condition);
 	}
 }

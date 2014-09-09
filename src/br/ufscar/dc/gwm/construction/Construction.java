@@ -1,8 +1,12 @@
 package br.ufscar.dc.gwm.construction;
 
-import br.ufscar.dc.gwm.Node;
+import java.util.Set;
 
-public abstract class Construction<T1> extends Node {
+import br.ufscar.dc.gwm.Graph;
+import br.ufscar.dc.gwm.Node;
+import br.ufscar.dc.gwm.node.control.ControlNode;
+
+public abstract class Construction<T1 extends ControlNode> extends Node {
 
 	private static final long serialVersionUID = 7481092845093724386L;
 
@@ -22,12 +26,14 @@ public abstract class Construction<T1> extends Node {
 		this.node = node;
 	}
 	
-	public T1 getStartNode() {
+	public T1 getNode() {
         return node;
 	}
 
-	public void setStartNode(T1 node) {
+	public void setNode(T1 node) {
         this.node = node;
 	}
+	
+	public abstract Set<Graph> getBranches();
 	
 }

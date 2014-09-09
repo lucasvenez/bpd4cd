@@ -1,15 +1,13 @@
 package br.ufscar.dc.transformations.lifting.wsbpel.parser;
 
 import static br.ufscar.dc.languages.wsbpel.components.ActivitiesName.INVOKE;
-import nl.utwente.eemcs.graph.ActivityNode;
-import nl.utwente.eemcs.graph.CommunicatorNode;
-import nl.utwente.eemcs.graph.CommunicatorType;
-import nl.utwente.eemcs.graph.Edge;
-import nl.utwente.eemcs.graph.EdgeType;
-import nl.utwente.eemcs.graph.Graph;
 
 import org.w3c.dom.Element;
 
+import br.ufscar.dc.gwm.Edge;
+import br.ufscar.dc.gwm.Graph;
+import br.ufscar.dc.gwm.node.ActivityNode;
+import br.ufscar.dc.gwm.node.communication.CommunicationNode;
 import br.ufscar.dc.transformations.lifting.ActivityParser;
 
 public class InvokeParser extends ActivityParser<Element, Graph> {
@@ -49,7 +47,7 @@ public class InvokeParser extends ActivityParser<Element, Graph> {
       /*
        * Invoke request node instance
        */
-      CommunicatorNode ireq = new CommunicatorNode(name.concat("Ireq"),
+      CommunicationNode ireq = new CommunicationNode(name.concat("Ireq"),
             CommunicatorType.InvokeRec);
       ireq.addAttribute("partnerLink", activity.getAttribute("partnerLink"));
 
@@ -64,8 +62,8 @@ public class InvokeParser extends ActivityParser<Element, Graph> {
       /*
        * Receive node instance
        */
-      CommunicatorNode rec =
-         new CommunicatorNode(name.concat("Rec"), CommunicatorType.Receive);
+      CommunicationNode rec =
+         new CommunicationNode(name.concat("Rec"), CommunicatorType.Receive);
 
       /*
        * Communication edge between ireq and rec nodes.
@@ -126,7 +124,7 @@ public class InvokeParser extends ActivityParser<Element, Graph> {
          /*
           * Response node instance
           */
-         CommunicatorNode rep = new CommunicatorNode(name.concat("Rep"),
+         CommunicationNode rep = new CommunicationNode(name.concat("Rep"),
                CommunicatorType.Response);
 
          /*
@@ -149,7 +147,7 @@ public class InvokeParser extends ActivityParser<Element, Graph> {
          /*
           * Invoke response node instance
           */
-         CommunicatorNode ires = new CommunicatorNode(name.concat("Ires"),
+         CommunicationNode ires = new CommunicationNode(name.concat("Ires"),
                CommunicatorType.InvokeRes);
 
          /*

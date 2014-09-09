@@ -1,0 +1,9 @@
+check.project.nature=true
+eclipse.preferences.version=1
+target.runtime=org.jboss.runtime.jbpm5
+tool.profile/org.eclipse.bpmn2.modeler.runtime.none/profile.1=false
+tool.profile/org.eclipse.bpmn2.modeler.runtime.none/profile.2=false
+tool.profile/org.eclipse.bpmn2.modeler.runtime.none/profile.3=false
+tool.profile/org.eclipse.bpmn2.modeler.runtime.none/profile.4=true
+tool.profile/org.eclipse.bpmn2.modeler.runtime.none/profile.5=false
+tool.profile/org.eclipse.bpmn2.modeler.runtime.none/profile.6=false

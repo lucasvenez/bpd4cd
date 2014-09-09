@@ -45,12 +45,12 @@ public class IfParser extends ActivityParser<Element, ConditionalBranch> {
       }
 
       /* creating an instance of ConditionalBranch class */
-      ConditionalBranch conditionalConstruct = new ConditionalBranch(name);
+      ConditionalBranch conditionalBranch = new ConditionalBranch(name);
 
       /* getting all arbitrary attributes */
       for (int index = 0; index < activity.getAttributes().getLength(); index++)
          if (!activity.getAttributes().item(index).getNodeName().equals("name"))
-            conditionalConstruct.addAttribute(
+            conditionalBranch.addAttribute(
                   activity.getAttributes().item(index).getNodeName(), activity
                         .getAttributes().item(index).getNodeValue());
 
@@ -66,10 +66,10 @@ public class IfParser extends ActivityParser<Element, ConditionalBranch> {
       EifNode endNode = new EifNode(name.concat("End"));
 
       /* setting data */
-      startNode.setParentConstruct(conditionalConstruct);
-      conditionalConstruct.setStartNode(startNode);
-      endNode.setParentConstruct(conditionalConstruct);
-      conditionalConstruct.setEndNode(endNode);
+      startNode.setParentConstruction(conditionalBranch);
+      conditionalBranch.setStartNode(startNode);
+      endNode.setParentConstruction(conditionalBranch);
+      conditionalBranch.setEndNode(endNode);
 
       Graph trueBranch = null;
 
@@ -93,20 +93,20 @@ public class IfParser extends ActivityParser<Element, ConditionalBranch> {
       }
 
       /* if true activity */
-      conditionalConstruct.setBranch(trueBranch, true);
+      conditionalBranch.addBranch(true, trueBranch);
 
       for(int i = 0; i < activity.getChildNodes().getLength(); i++) {
          Node n = activity.getChildNodes().item(i);
          
          if (n.getNodeName().equals(ELSE) || n.getNodeName().equals(ELSEIF))
-            conditionalConstruct.setBranch(
+            conditionalBranch.addBranch(
+               false,
                recursiveFalseCondition(
                   activity.getChildNodes(), i, 
-                  activity.getChildNodes().getLength()),
-               false);
+                  activity.getChildNodes().getLength()));
       }
 
-      return conditionalConstruct;
+      return conditionalBranch;
    }
 
    private Graph recursiveFalseCondition(NodeList nodes, int startIndex, int endIndex) 
@@ -137,14 +137,13 @@ public class IfParser extends ActivityParser<Element, ConditionalBranch> {
          else if (e.getNodeName().equals(ELSEIF)) {
             result = new Graph();
             Element elseif = (Element) nodes.item(startIndex);
-            ConditionalBranch conditionalConstruct = new ElseIfParser(elseif).parse();
+            ConditionalBranch conditionalBranch = new ElseIfParser(elseif).parse();
 
             if (startIndex < endIndex)
-               conditionalConstruct.setBranch(
-                  recursiveFalseCondition(
-                     nodes, ++startIndex,endIndex), false);
+               conditionalBranch.addBranch(
+            		false, recursiveFalseCondition(nodes, ++startIndex,endIndex));
 
-            result.addNode(conditionalConstruct);
+            result.addNode(conditionalBranch);
          }
       }
       return result;

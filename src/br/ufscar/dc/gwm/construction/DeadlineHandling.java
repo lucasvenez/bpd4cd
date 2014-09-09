@@ -39,7 +39,7 @@ public class DeadlineHandling extends CompositeConstruction<DdlNode,EddlNode> {
 	}
 
 	public DeadlineException getDeadline() {
-		return this.startNode.getDeadline();
+		return this.node.getDeadline();
 	}
 	
 	@Override

@@ -6,17 +6,16 @@ import java.security.InvalidParameterException;
 
 import javax.activation.UnsupportedDataTypeException;
 
-import nl.utwente.eemcs.graph.Graph;
-import nl.utwente.eemcs.graph.Node;
-import nl.utwente.eemcs.graph.ParallelConstruct;
-import nl.utwente.eemcs.graph.ParallelEndNode;
-import nl.utwente.eemcs.graph.ParallelStartNode;
-
 import org.w3c.dom.Element;
 
+import br.ufscar.dc.gwm.Graph;
+import br.ufscar.dc.gwm.Node;
+import br.ufscar.dc.gwm.construction.ParallelBranches;
+import br.ufscar.dc.gwm.node.control.EparNode;
+import br.ufscar.dc.gwm.node.control.ParNode;
 import br.ufscar.dc.transformations.lifting.ActivityParser;
 
-public class FlowParser extends ActivityParser<Element, ParallelConstruct> {
+public class FlowParser extends ActivityParser<Element, ParallelBranches> {
 
    private static final long serialVersionUID = -2615030548705400252L;
 
@@ -28,7 +27,7 @@ public class FlowParser extends ActivityParser<Element, ParallelConstruct> {
    }
 
    @Override
-   public ParallelConstruct parse() throws UnsupportedDataTypeException {
+   public ParallelBranches parse() throws UnsupportedDataTypeException {
 
       /*
        * Getting WSBPEL activity name
@@ -41,7 +40,7 @@ public class FlowParser extends ActivityParser<Element, ParallelConstruct> {
          name = FLOW;
       }
 
-      ParallelConstruct parallelConstruct = new ParallelConstruct(name);
+      ParallelBranches parallelConstruct = new ParallelBranches(name);
 
       for (int i = 0; i < activity.getAttributes().getLength(); i++)
          if (!activity.getAttributes().item(i).getTextContent().equals("name"))
@@ -49,10 +48,10 @@ public class FlowParser extends ActivityParser<Element, ParallelConstruct> {
                   .getNodeName(), activity.getAttributes().item(i)
                   .getTextContent());
 
-      parallelConstruct.setStartNode(new ParallelStartNode(name
+      parallelConstruct.setStartNode(new ParNode(name
             .concat("FlowStart")));
 
-      parallelConstruct.setEndNode(new ParallelEndNode(name
+      parallelConstruct.setEndNode(new EparNode(name
             .concat("FlowEndNode")));
 
       /*
