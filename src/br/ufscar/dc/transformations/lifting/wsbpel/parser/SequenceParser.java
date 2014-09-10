@@ -6,14 +6,11 @@ import java.security.InvalidParameterException;
 
 import javax.activation.UnsupportedDataTypeException;
 
-import nl.utwente.eemcs.graph.Edge;
-import nl.utwente.eemcs.graph.EdgeType;
-import nl.utwente.eemcs.graph.Graph;
-
 import org.w3c.dom.Element;
 
-import nl.utwente.eemcs.graph.Node;
-
+import br.ufscar.dc.gwm.Graph;
+import br.ufscar.dc.gwm.Node;
+import br.ufscar.dc.gwm.edge.ControlEdge;
 import br.ufscar.dc.transformations.lifting.ActivityParser;
 
 public class SequenceParser extends ActivityParser<Element, Graph> {
@@ -45,8 +42,8 @@ public class SequenceParser extends ActivityParser<Element, Graph> {
                Node nestedNode = (Node) nestedActivity;
 
                if (!sequenceGraph.getNodes().isEmpty())
-                  sequenceGraph.addEdge(new Edge(sequenceGraph.getEndNode(),
-                        nestedNode, EdgeType.Control));
+                  sequenceGraph.addEdge(new ControlEdge(sequenceGraph.getEndNode(),
+                        nestedNode));
 
                sequenceGraph.addNode(nestedNode);
 

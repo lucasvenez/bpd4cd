@@ -26,6 +26,10 @@ public class Loop extends Construction<LoopNode> {
 		return conditionEvaluatedBefore;
 	}
 	
+	public void setIterativeBranch(Graph iterativeBranch) {
+		this.iterativeBranch = iterativeBranch;
+	}
+	
 	public void setConditionEvaluatedBefore(boolean before) {
 		this.conditionEvaluatedBefore = before;
 	}

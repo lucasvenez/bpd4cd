@@ -10,6 +10,11 @@ public class LoopNode extends ControlNode {
 		super("loop");
 	}
 	
+	public LoopNode(String name, String condition) {
+		super(name);
+		this.condition = condition;		
+	}
+	
 	public LoopNode(String condition) {
 		super("loop");
 		this.condition = condition;

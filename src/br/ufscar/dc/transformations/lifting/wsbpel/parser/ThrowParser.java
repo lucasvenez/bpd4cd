@@ -2,10 +2,9 @@ package br.ufscar.dc.transformations.lifting.wsbpel.parser;
 
 import static br.ufscar.dc.languages.wsbpel.components.ActivitiesName.THROW;
 
-import nl.utwente.eemcs.graph.ActivityNode;
-
 import org.w3c.dom.Element;
 
+import br.ufscar.dc.gwm.node.exception.ThrowNode;
 import br.ufscar.dc.transformations.lifting.ActivityParser;
 
 /**
@@ -18,7 +17,7 @@ import br.ufscar.dc.transformations.lifting.ActivityParser;
  * @since 08/11/2012
  *
  */
-public class ThrowParser extends ActivityParser<Element, ActivityNode> {
+public class ThrowParser extends ActivityParser<Element, ThrowNode> {
 
    private static final long serialVersionUID = 3009037285424109600L;
 
@@ -30,7 +29,7 @@ public class ThrowParser extends ActivityParser<Element, ActivityNode> {
    }
 
    @Override
-   public ActivityNode parse() {
+   public ThrowNode parse() {
       
       String name; 
       
@@ -41,8 +40,7 @@ public class ThrowParser extends ActivityParser<Element, ActivityNode> {
          name = THROW;
       }
       
-      
-      ActivityNode activityNode = new ActivityNode( name );
+      ThrowNode activityNode = new ThrowNode(name);
 
       activityNode.addAttribute("type", THROW);
       

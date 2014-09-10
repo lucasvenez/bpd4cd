@@ -21,6 +21,14 @@ public class DataItem extends Attribute implements IEdgeSet {
 	private Scope scope;
 
 	private Set<DataEdge> edges = new HashSet<DataEdge>();
+	
+	public DataItem() {
+		
+	}
+	
+	public DataItem(String name) {
+		this.name = name;
+	}
 
 	public String getName() {
 		return name;

@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.HashMap;
 
+import static br.ufscar.dc.utils.Math.pow;
+
 /**
  * Implementation of a sparse matrix.
  * 
@@ -203,7 +205,7 @@ public class SparseMatrix<E> {
 		/*
 		 * Calculation of the index if i = 12 and j = 24 then index = 1224
 		 */
-		return (long) (line * Math.pow(10, i) + column);
+		return (line * pow(10, i) + column);
 	}
 
 	@Override

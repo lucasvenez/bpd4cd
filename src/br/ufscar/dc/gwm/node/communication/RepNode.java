@@ -8,4 +8,8 @@ public class RepNode extends CommunicationNode {
 		super("rep");
 	}
 
+	public RepNode(String name) {
+		super(name);
+	}
+
 }

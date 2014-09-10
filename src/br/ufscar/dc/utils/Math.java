@@ -1,12 +1,33 @@
 package br.ufscar.dc.utils;
 
 import static br.ufscar.dc.utils.Convertion.charToBoolean;
-import static java.lang.Math.pow;
 
 import java.security.InvalidParameterException;
 
 public class Math {
 
+	/**
+	 * FIXME negative numbers
+	 * @param n1
+	 * @param n2
+	 * @return
+	 */
+	public static long pow(long n1, long n2) {
+		
+		long result = 1;
+		
+		if (n2 > 0) { 
+			
+			result = n1;
+			
+			for (long i = 1; i < n2; i++) {
+				
+				result *= n1;
+			}
+		}
+		
+		return result;
+	}
 	
 	public static Double min(Double n1, Double n2) {
 		
