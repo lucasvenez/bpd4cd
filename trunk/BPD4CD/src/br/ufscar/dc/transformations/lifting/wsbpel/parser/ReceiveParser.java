@@ -1,14 +1,13 @@
 package br.ufscar.dc.transformations.lifting.wsbpel.parser;
 
 import static br.ufscar.dc.languages.wsbpel.components.ActivitiesName.RECEIVE;
-import nl.utwente.eemcs.graph.CommunicatorNode;
-import nl.utwente.eemcs.graph.CommunicatorType;
 
 import org.w3c.dom.Node;
 
+import br.ufscar.dc.gwm.node.communication.RecNode;
 import br.ufscar.dc.transformations.lifting.ActivityParser;
 
-public class ReceiveParser extends ActivityParser<Node,CommunicatorNode> {
+public class ReceiveParser extends ActivityParser<Node,RecNode> {
 
    private static final long serialVersionUID = -4486121154012858631L;
 
@@ -20,7 +19,7 @@ public class ReceiveParser extends ActivityParser<Node,CommunicatorNode> {
    }
 
    @Override
-   public CommunicatorNode parse() {
+   public RecNode parse() {
       String name;
 
       try {
@@ -34,8 +33,7 @@ public class ReceiveParser extends ActivityParser<Node,CommunicatorNode> {
          name = RECEIVE;
       }
 
-      CommunicatorNode receiveNode = new CommunicatorNode(name,
-            CommunicatorType.Response);
+      RecNode receiveNode = new RecNode(name);
 
       for (int i = 0; i < super.activity.getAttributes().getLength(); i++)
          if (!activity.getAttributes().item(i).getNodeName().equals("name"))

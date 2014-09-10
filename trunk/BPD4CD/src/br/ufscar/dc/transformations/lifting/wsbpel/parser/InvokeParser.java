@@ -4,10 +4,16 @@ import static br.ufscar.dc.languages.wsbpel.components.ActivitiesName.INVOKE;
 
 import org.w3c.dom.Element;
 
-import br.ufscar.dc.gwm.Edge;
+import br.ufscar.dc.gwm.DataItem;
 import br.ufscar.dc.gwm.Graph;
+import br.ufscar.dc.gwm.edge.CommunicationEdge;
+import br.ufscar.dc.gwm.edge.ControlEdge;
+import br.ufscar.dc.gwm.edge.DataEdge;
 import br.ufscar.dc.gwm.node.ActivityNode;
-import br.ufscar.dc.gwm.node.communication.CommunicationNode;
+import br.ufscar.dc.gwm.node.communication.GetNode;
+import br.ufscar.dc.gwm.node.communication.RecNode;
+import br.ufscar.dc.gwm.node.communication.RepNode;
+import br.ufscar.dc.gwm.node.communication.ReqNode;
 import br.ufscar.dc.transformations.lifting.ActivityParser;
 
 public class InvokeParser extends ActivityParser<Element, Graph> {
@@ -47,34 +53,32 @@ public class InvokeParser extends ActivityParser<Element, Graph> {
       /*
        * Invoke request node instance
        */
-      CommunicationNode ireq = new CommunicationNode(name.concat("Ireq"),
-            CommunicatorType.InvokeRec);
-      ireq.addAttribute("partnerLink", activity.getAttribute("partnerLink"));
+      ReqNode req = new ReqNode(name.concat("Req"));
+      req.addAttribute("partnerLink", activity.getAttribute("partnerLink"));
 
-      ireq.addAttribute("operation", activity.getAttribute("operation"));
+      req.addAttribute("operation", activity.getAttribute("operation"));
       
       if (activity.hasAttribute("portType"))
-         ireq.addAttribute("portType", activity.getAttribute("portType"));
+         req.addAttribute("portType", activity.getAttribute("portType"));
       
       if (activity.hasAttribute("inputVariable"))
-            ireq.addAttribute("inputVariable", activity.getAttribute("inputVariable"));
+            req.addAttribute("inputVariable", activity.getAttribute("inputVariable"));
       
       /*
        * Receive node instance
        */
-      CommunicationNode rec =
-         new CommunicationNode(name.concat("Rec"), CommunicatorType.Receive);
+      RecNode rec = new RecNode(name.concat("Rec"));
 
       /*
-       * Communication edge between ireq and rec nodes.
+       * Communication edge between req and rec nodes.
        */
-      Edge requestCommEdge = new Edge(ireq, rec, EdgeType.Communication);
+      CommunicationEdge requestCommEdge = new CommunicationEdge(req, rec);
 
       /*
        * Adding edges and nodes in the Graph.
        */
-      invokeGraph.addNode(ireq);
-      invokeGraph.setStartNode(ireq);
+      invokeGraph.addNode(req);
+      invokeGraph.setStartNode(req);
       invokeGraph.addNode(rec);
       invokeGraph.addEdge(requestCommEdge);
 
@@ -87,15 +91,15 @@ public class InvokeParser extends ActivityParser<Element, Graph> {
       activityNode.addAttribute("type", "webservice");
 
       /*
-       * Data edge between rec and ireq nodes.
+       * Data edge between rec and req nodes.
        */
       if (activity.hasAttribute("inputVariable")) {
 
-         Edge requestDataEdge = new Edge(ireq, rec, EdgeType.Data);
-         requestDataEdge.setLabel(activity.getAttribute("inputVariable"));
+         DataEdge requestDataEdge = new DataEdge(req, rec);
+         requestDataEdge.addData(new DataItem(activity.getAttribute("inputVariable")));
 
-         Edge receiveDataEdge = new Edge(rec, activityNode, EdgeType.Data);
-         receiveDataEdge.setLabel(activity.getAttribute("inputVariable"));
+         DataEdge receiveDataEdge = new DataEdge(rec, activityNode);
+         receiveDataEdge.addData(new DataItem(activity.getAttribute("inputVariable")));
 
          /*
           * Adding data edges in the Graph.
@@ -107,8 +111,7 @@ public class InvokeParser extends ActivityParser<Element, Graph> {
       /*
        * Control edge between rec and activity nodes.
        */
-      Edge recActivityControlEdge = new Edge(rec, activityNode,
-            EdgeType.Control);
+      ControlEdge recActivityControlEdge = new ControlEdge(rec, activityNode);
 
       /*
        * Adding control edge and activity node in the Graph.
@@ -124,20 +127,19 @@ public class InvokeParser extends ActivityParser<Element, Graph> {
          /*
           * Response node instance
           */
-         CommunicationNode rep = new CommunicationNode(name.concat("Rep"),
-               CommunicatorType.Response);
+         RepNode rep = new RepNode(name.concat("Rep"));
 
          /*
           * Data edge between activity and rep nodes.
           */
-         Edge replyDataEdge = new Edge(activityNode, rep, EdgeType.Data);
-         replyDataEdge.setLabel(activity.getAttribute("outputVariable"));
+         DataEdge replyDataEdge = new DataEdge(activityNode, rep);
+         replyDataEdge.addData(new DataItem(activity.getAttribute("outputVariable")));
 
          /*
           * Control edge between activity and rep nodes.
           */
-         Edge replyControlEdge = new Edge(activityNode, rep, EdgeType.Control);
-
+         ControlEdge replyControlEdge = new ControlEdge(activityNode, rep);
+         
          /*
           * Adding control and data edges between activity and rep nodes.
           */
@@ -147,26 +149,25 @@ public class InvokeParser extends ActivityParser<Element, Graph> {
          /*
           * Invoke response node instance
           */
-         CommunicationNode ires = new CommunicationNode(name.concat("Ires"),
-               CommunicatorType.InvokeRes);
+         GetNode ires = new GetNode(name.concat("Ires"));
 
          /*
           * Communication edge between rep and ires nodes.
           */
-         Edge responseCommEdge = new Edge(rep, ires, EdgeType.Communication);
+         CommunicationEdge responseCommEdge = new CommunicationEdge(rep, ires);
 
          /*
-          * Control edge between ireq and ires nodes.
+          * Control edge between req and ires nodes.
           */
-         Edge iControlEdge = new Edge(ireq, ires, EdgeType.Control);
+         ControlEdge iControlEdge = new ControlEdge(req, ires);
 
          /*
           * Data edge between ires and rep nodes.
           */
-         Edge responseDataEdge = new Edge(rep, ires, EdgeType.Data);
+         DataEdge responseDataEdge = new DataEdge(rep, ires);
          
          ires.addAttribute("outputVariable", activity.getAttribute("outputVariable"));
-         responseDataEdge.setLabel(activity.getAttribute("outputVariable"));
+         responseDataEdge.addData(new DataItem(activity.getAttribute("outputVariable")));
 
          invokeGraph.addEdge(iControlEdge);
          invokeGraph.addEdge(responseCommEdge);

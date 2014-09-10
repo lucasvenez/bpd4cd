@@ -8,4 +8,8 @@ public class ReqNode extends CommunicationNode {
 		super("req");
 	}
 
+	public ReqNode(String name) {
+		super(name);
+	}
+
 }

@@ -1,14 +1,25 @@
 package br.ufscar.dc.transformations.lifting.wsbpel.parser;
 
-import static br.ufscar.dc.languages.wsbpel.components.ActivitiesName.*;
+import static br.ufscar.dc.languages.wsbpel.components.ActivitiesName.ASSIGN;
+import static br.ufscar.dc.languages.wsbpel.components.ActivitiesName.FLOW;
+import static br.ufscar.dc.languages.wsbpel.components.ActivitiesName.FOREACH;
+import static br.ufscar.dc.languages.wsbpel.components.ActivitiesName.IF;
+import static br.ufscar.dc.languages.wsbpel.components.ActivitiesName.INVOKE;
+import static br.ufscar.dc.languages.wsbpel.components.ActivitiesName.RECEIVE;
+import static br.ufscar.dc.languages.wsbpel.components.ActivitiesName.REPLY;
+import static br.ufscar.dc.languages.wsbpel.components.ActivitiesName.RETHROW;
+import static br.ufscar.dc.languages.wsbpel.components.ActivitiesName.SEQUENCE;
+import static br.ufscar.dc.languages.wsbpel.components.ActivitiesName.THROW;
+import static br.ufscar.dc.languages.wsbpel.components.ActivitiesName.VALIDATE;
+import static br.ufscar.dc.languages.wsbpel.components.ActivitiesName.WHILE;
+import static br.ufscar.dc.languages.wsbpel.components.ActivitiesName.WORKFLOW_ACTIVITIES;
 
 import javax.activation.UnsupportedDataTypeException;
 
-import nl.utwente.eemcs.graph.Graph;
-import nl.utwente.eemcs.graph.Node;
-
 import org.w3c.dom.Element;
 
+import br.ufscar.dc.gwm.Graph;
+import br.ufscar.dc.gwm.Node;
 import br.ufscar.dc.transformations.lifting.ActivityParser;
 
 /**

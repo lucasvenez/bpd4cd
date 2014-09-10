@@ -1,4 +1,5 @@
 package br.ufscar.dc.decomposition;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -17,11 +18,11 @@ public class Decomposition {
 
 	private Graph process;
 
-	Map<String, Graph> cloudList   = new HashMap<String, Graph>();
-	Map<String, Graph> premiseList = new HashMap<String, Graph>();
+	private Map<String, Graph> cloudList   = new HashMap<String, Graph>();
+	private Map<String, Graph> premiseList = new HashMap<String, Graph>();
 	
-	int cloudOperationCount   = 0;
-	int premiseOperationCount = 0;
+	private int cloudOperationCount   = 0;
+	private int premiseOperationCount = 0;
 	
 	public Coreography performDecomposition() {
 		

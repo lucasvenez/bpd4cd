@@ -8,19 +8,17 @@ import java.security.InvalidParameterException;
 
 import javax.activation.UnsupportedDataTypeException;
 
-import nl.utwente.eemcs.graph.Edge;
-import nl.utwente.eemcs.graph.EdgeType;
-import nl.utwente.eemcs.graph.Graph;
-import nl.utwente.eemcs.graph.LoopConditionalNode;
-import nl.utwente.eemcs.graph.LoopConstruct;
-import nl.utwente.eemcs.graph.Node;
-
 import org.w3c.dom.Element;
 
+import br.ufscar.dc.gwm.Graph;
+import br.ufscar.dc.gwm.Node;
+import br.ufscar.dc.gwm.construction.Loop;
+import br.ufscar.dc.gwm.edge.ControlEdge;
+import br.ufscar.dc.gwm.node.control.LoopNode;
 import br.ufscar.dc.transformations.lifting.ActivityParser;
 import br.ufscar.dc.utils.XMLUtils;
 
-public class WhileParser extends ActivityParser<Element, LoopConstruct> {
+public class WhileParser extends ActivityParser<Element, Loop> {
 
    private static final long serialVersionUID = -4196984214806911896L;
 
@@ -32,7 +30,7 @@ public class WhileParser extends ActivityParser<Element, LoopConstruct> {
    }
 
    @Override
-   public LoopConstruct parse() throws UnsupportedDataTypeException {
+   public Loop parse() throws UnsupportedDataTypeException {
       String name;
 
       try {
@@ -41,17 +39,17 @@ public class WhileParser extends ActivityParser<Element, LoopConstruct> {
          name = WHILE;
       }
 
-      LoopConstruct loopConstruct = new LoopConstruct(name);
+      Loop loopConstruct = new Loop(name);
 
       /*
        * Identifying the loop as while activity.
        */
-      loopConstruct.setEvaluateConditionBefore(true);
+      loopConstruct.setConditionEvaluatedBefore(true);
 
       /*
        * Getting loop condtion
        */
-      loopConstruct.setConditionNode(new LoopConditionalNode(name
+      loopConstruct.setNode(new LoopNode(name
             .concat("Condition"), XMLUtils.getFirstNamedNode(
             activity.getChildNodes(), CONDITION).getTextContent()));
 
@@ -73,8 +71,8 @@ public class WhileParser extends ActivityParser<Element, LoopConstruct> {
                else if (nestedActivity instanceof Node) {
 
                   if (!innerGraph.getNodes().isEmpty())
-                     innerGraph.addEdge(new Edge(innerGraph.getEndNode(),
-                           (Node) nestedActivity, EdgeType.Control));
+                     innerGraph.addEdge(new ControlEdge(innerGraph.getEndNode(),
+                           (Node) nestedActivity));
 
                   innerGraph.getNodes().add((Node) nestedActivity);
 
@@ -84,7 +82,7 @@ public class WhileParser extends ActivityParser<Element, LoopConstruct> {
                } else
                   throw new InvalidParameterException();
 
-               loopConstruct.setInnerGraph(innerGraph);
+               loopConstruct.setIterativeBranch(innerGraph);
             }
          }
       }

@@ -44,6 +44,10 @@ public class Selection {
 	private SparseMatrix<Boolean> dataNodeRelation;       // R(i,j)
 	
 	private CostsWeight weights;
+
+	public Selection() {
+	
+	}
 	
 	public Selection(Graph monolithicProcess) {
 		this.monolithicProcess = monolithicProcess;

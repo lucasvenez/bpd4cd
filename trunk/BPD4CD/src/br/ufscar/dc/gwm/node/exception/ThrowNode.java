@@ -9,4 +9,8 @@ public class ThrowNode extends Node {
 	public ThrowNode() {
 		super("throw");
 	}
+
+	public ThrowNode(String name) {
+		super(name);
+	}
 }

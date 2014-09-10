@@ -300,4 +300,14 @@ public class Graph extends Attribute implements IConcern, INodeSet, IEdgeSet, ID
 		throw new UnsupportedOperationException();
 		
 	}
+
+	public void merge(Graph parserOutput) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public Node getEndNode() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

@@ -23,14 +23,6 @@ public class TransformationChain implements
    public HashSet<Document> parse(Document source) throws Exception {
 
       HashSet<Document> result = null;
-
-      result =
-         grounding.generate(
-            decomposition
-               .transform(
-                  lifting.parse(source),
-                  null));
-
       return result;
    }
 

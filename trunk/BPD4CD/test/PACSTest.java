@@ -197,8 +197,8 @@ public class PACSTest {
 
 		final double premiseVCPUSFrequency = 0.80;
 
-		SparseMatrix<Boolean> dataNodeRelation = Selection
-				.calculateDataNodeRelation(dataFlow);
+		SparseMatrix<Boolean> dataNodeRelation; //= new Selection()
+				//.calculateDataNodeRelation();
 
 		double bandwidth = 125;
 
@@ -212,7 +212,7 @@ public class PACSTest {
 
 			SparseMatrix<Boolean> tmpNodesLocation = Selection
 					.generateNodesLocation("0"
-							+ Selection.generateBitsLocation(i,
+							+ br.ufscar.dc.utils.Convertion.generateBitsLocation(i,
 									NUMBER_OF_NODES - 2) + "0");
 
 			SparseMatrix<Boolean> dataLocation = Selection

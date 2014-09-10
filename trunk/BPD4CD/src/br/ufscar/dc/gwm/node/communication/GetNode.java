@@ -8,4 +8,8 @@ public class GetNode extends CommunicationNode {
 		super("get");
 	}
 
+	public GetNode(String name) {
+		super(name);
+	}
+
 }

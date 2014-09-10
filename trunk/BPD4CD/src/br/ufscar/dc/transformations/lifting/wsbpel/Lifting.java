@@ -17,12 +17,11 @@ import java.util.HashSet;
 
 import javax.activation.UnsupportedDataTypeException;
 
-import nl.utwente.eemcs.graph.Graph;
-import nl.utwente.eemcs.graph.Node;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import br.ufscar.dc.gwm.Graph;
+import br.ufscar.dc.gwm.Node;
 import br.ufscar.dc.languages.wsbpel.exceptions.WSBPELSyntaxInvalidException;
 import br.ufscar.dc.transformations.lifting.LiftingTransformation;
 import br.ufscar.dc.transformations.lifting.wsbpel.parser.Parser;
