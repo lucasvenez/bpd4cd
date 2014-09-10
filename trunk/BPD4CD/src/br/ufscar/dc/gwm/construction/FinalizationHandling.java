@@ -9,6 +9,8 @@ import br.ufscar.dc.gwm.node.exception.FinNode;
 
 public class FinalizationHandling extends CompositeConstruction<FinNode,EfinNode> {
 
+	private static final long serialVersionUID = 410020251655409419L;
+
 	private Graph branch;
 	
 	public FinalizationHandling(String name) {
